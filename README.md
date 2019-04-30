@@ -5,6 +5,7 @@
 |**Software**| **Version** |
 |:---------:|-------------|
 | python    | 3.6.4 |
-| Gnat      | per gram    |
+| minimap2  | 2.16-r922    |
+| graphmap  | 0.5.2  |
 
 
