@@ -2,11 +2,9 @@
 
 ### Pre-requisits
 
-| **Software**  |   **Version**   |
+|**Software**| **Version** |
 |:---------:|-------------|
-| Animal    | Description |
+| python    | 3.6.4 |
 | Gnat      | per gram    |
-|           | each        |
-| Gnu       | stuffed     |
-| Emu       | stuffed     |
-| Armadillo | frozen      |
+
+
