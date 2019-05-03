@@ -51,17 +51,17 @@ done
 ```
 minimap2:
 ```{r, engine='bash', count_lines}
-minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
+minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T.fastq}.sam
 ```
 
 graphmap default:
 ```{r, engine='bash', count_lines}
-graphmap align -r ${FASTA_REFERENCE} -d ${FASTQ_FILE} -o ${FASTQ_FILE%.U2T*}.sam -v 1 -K fastq
+graphmap align -r ${FASTA_REFERENCE} -d ${FASTQ_FILE} -o ${FASTQ_FILE%.U2T.fastq}.sam -v 1 -K fastq
 ```
 
 graphmap sensitive:
 ```{r, engine='bash', count_lines}
-graphmap align -r ${FASTA_REFERENCE} -d ${FASTQ_FILE} -o ${FASTQ_FILE%.U2T*}.sam -v 1 -K fastq --rebuild-index --double-index --mapq -1 -x sensitive -z -1 --min-read-len 0 -A 7 -k 5
+graphmap align -r ${FASTA_REFERENCE} -d ${FASTQ_FILE} -o ${FASTQ_FILE%.U2T.fastq}.sam -v 1 -K fastq --rebuild-index --double-index --mapq -1 -x sensitive -z -1 --min-read-len 0 -A 7 -k 5
 ```
 
 Post-processing:
@@ -71,8 +71,8 @@ str=$(echo $i| sed  's/.sam//')
 samtools view -Sbh $i > $str.bam  #Transforming the .sam into .bam
 samtools sort -@ 4 $str.bam > $str.sorted.bam #Sorting the bam file
 samtools index $str.sorted.bam #Indexing the sorted bam
-rm $i #removing the sam file
-rm $str.bam #removing the not sorted bam
+rm $i #Removing the sam file
+rm $str.bam #Removing the not sorted bam
 done
 ```
 
