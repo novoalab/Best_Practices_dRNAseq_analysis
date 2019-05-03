@@ -16,7 +16,9 @@
 ### Step 1: Base-calling
 
 Albacore v2.1.7:
+```{r, engine='bash', count_lines}
 read_fast5_basecaller.py --flowcell ${FLOWCELL} --kit ${KIT} --output_format fastq,fast5 -n ${NUMFAST5} --input ${INPUT_DIRECTORY} --save_path ${OUTPUT_DIRECTORY} --worker_threads ${NUMBER_OF_THREADS} --disable_filtering
+```
 
 Guppy v2.3.1 & 3.0.3:
 ```{r, engine='bash', count_lines}
@@ -24,5 +26,17 @@ guppy_basecaller --flowcell ${FLOWCELL} --kit ${KIT} --fast5_out --input ${INPUT
 ```
 ### Step 2: Analysis of base-calling
 
+For checking the number of common base-called reads between approaches:
+
+```{r, engine='bash', count_lines}
+awk '{if(NR%4==1) print $1}' ${FASTQ_FILE} | sed -e "s/^@//" > ${OUTPUT_FILE}
+sort ${OUTPUT_FILE} > ${SORTED_OUTPUT_FILE}
+wc -l ${SORTED_OUTPUT_FILE}
+comm -12 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${COMMON_READS}
+comm -13 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_Y_READS}
+comm -22 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_READS}
+```
+For running POREquality:
+https://github.com/carsweshau/POREquality 
 
 
