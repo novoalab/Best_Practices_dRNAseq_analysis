@@ -39,6 +39,14 @@ comm -23 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_R
 ```
 For running POREquality:
 https://github.com/carsweshau/POREquality 
+It takes as input the sequencing_summary.txt (output from any base-caller), if it is created in peaces, then we can merge them by:
+```{r, engine='bash', count_lines}
+header_file=$(ls *txt.gz | shuf -n 1)
+zcat $header_file | head -1 > ${FINAL_SEQUENCING_SUMMARY}
+for i in sequencing_summary*; do
+zcat $i | tail -n +2 >> ${FINAL_SEQUENCING_SUMMARY}
+done
+```
 
 ### Step 3: Mapping
 
