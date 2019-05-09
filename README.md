@@ -52,7 +52,7 @@ done
 'U' to 'T' conversion:
 ```{r, engine='bash', count_lines}
 for i in *fastq; do
-awk '{ if (NR%4 == 2) {gsub(/U/,"T",$1); print $1} else print }' $i > ${i%.fasq}.U2T.fastq;
+awk '{ if (NR%4 == 2) {gsub(/U/,"T",$1); print $1} else print }' $i > ${i%.fastq}.U2T.fastq;
 rm $i
 done
 ```
