@@ -9,6 +9,7 @@
 | guppy v2 | 2.3.1  |
 | guppy v3  | 3.0.3  |
 | POREquality | 0.9.8 |
+| EMBOSS stretcher | 6.6.0.0 |
 | minimap2  | 2.16-r922    |
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
