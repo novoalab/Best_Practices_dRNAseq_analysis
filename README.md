@@ -71,6 +71,8 @@ do
 	echo $a
 	echo $read_id$'\t'$al$'\t'$gl$'\t'$a >> final_output
 done
+rm read_A
+rm read_B
 ```
 If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
 ```{r, engine='bash', count_lines}
