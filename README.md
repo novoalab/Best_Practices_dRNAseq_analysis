@@ -71,13 +71,18 @@ do
 	echo $a
 	echo $read_id$'\t'$al$'\t'$gl$'\t'$a >> final_output
 done
-
-#If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
-
+```
+If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
+```{r, engine='bash', count_lines}
 for i in final_output_*
 do cat $i >> final_output
 rm $i
 done
+```
+For plotting the comparison:
+```{r, engine='bash', count_lines}
+Rscript -e "rmarkdown::render(input='per_read_analysis.Rmd')" -t ${THRESHOLD} -i ${INPUT_FILES} -n ${INPUT_NAMES}
+# where ${THRESHOLD} is the upper boundary for removing outliers, ${INPUT_FILES} is a string containing all the input files we want to compare separated by commas, e.g. final_output_RNAAB063141,final_output_RNAAB064293 and ${INPUT_NAMES} is a string containing the names that we want for all the input files, e.g. "0 % DMS,0.5 % DMS"
 ```
 
 ### Step 3: Mapping
