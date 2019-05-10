@@ -71,7 +71,7 @@ do
 	echo $read_id$'\t'$al$'\t'$gl$'\t'$a >> final_output
 done
 
-#If it is executed in parallel and we get different final_output_*, we can simply merge them:
+#If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
 
 for i in final_output_*
 do cat $i >> final_output
