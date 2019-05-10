@@ -37,13 +37,41 @@ comm -12 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${COMMON_READS}
 comm -13 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_Y_READS}
 comm -23 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_READS}
 ```
-And for running POREquality:
-https://github.com/carsweshau/POREquality, but it takes as input the sequencing_summary.txt (output from any base-caller), if it is created in peaces, then we can merge them by:
+For running POREquality:
+https://github.com/carsweshau/POREquality, but it takes as input the sequencing_summary.txt (output from any base-caller), if the base-calling is run in parallel, the sequencing_summary is created in peaces, in this case we can merge them by:
 ```{r, engine='bash', count_lines}
 header_file=$(ls *txt.gz | shuf -n 1)
 zcat $header_file | head -1 > ${FINAL_SEQUENCING_SUMMARY}
 for i in sequencing_summary*; do
 zcat $i | tail -n +2 >> ${FINAL_SEQUENCING_SUMMARY}
+done
+```
+And for the per_read comparing:
+```{r, engine='bash', count_lines}
+echo $'read_id\talbacore_length\tguppy_length\talignment_length\tmatches\tmismatches\tgaps_albacore\tgaps_guppy\tseq_id\tgaps_albacore_50\tgaps_guppy_50\tinsertions\tdeletions\tinsertions_50\tdeletions_50' > final_output
+
+cat ${COMMON_READS} | while read read_id
+do	
+	echo '>albacore' > read_A
+	grep -A1 $read_id ${FASTQ_FILE_BASECOLLER_A} | tail -n1 >> read_A
+	echo '>guppy' > read_B
+	grep -A1 $read_id ${FASTQ_FILE_BASECOLLER_B} | tail -n1 >> read_B
+
+	al=$(sed '2q;d' read_A | wc -c)
+	gl=$(sed '2q;d' read_B | wc -c)
+
+	stretcher read_A read_B output -aformat_outfile fasta
+
+	a=$(python3 compute_identity.py output)
+	echo $a
+	echo $read_id$'\t'$al$'\t'$gl$'\t'$a >> final_output
+done
+
+#If it is executed in parallel and we get different final_output_*, we can simply merge them:
+
+for i in final_output_*
+do cat $i >> final_output
+rm $i
 done
 ```
 
