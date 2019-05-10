@@ -2,6 +2,8 @@
 
 ### Pre-requisits
 
+The following software and modules have been used:
+
 |**Software**| **Version** |
 |:---------:|-------------|
 | python    | 3.6.4 |
@@ -10,6 +12,7 @@
 | guppy v3  | 3.0.3  |
 | POREquality | 0.9.8 |
 | EMBOSS stretcher | 6.6.0.0 |
+| biopython | 1.73 |
 | minimap2  | 2.16-r922    |
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
