@@ -241,7 +241,7 @@ for (i in seq(n)){
 
 &nbsp;  
 
-N consecutive gaps in albacore is considered as one insertion, and N number of consecutive gaps in guppy is considered as one deletion.
+N consecutive gaps in albacore are considered as one insertion, and N number of consecutive gaps in guppy are considered as one deletion.
 
 ```{r INDELS3}
 indels_density <- function(data, name){ #, lim
