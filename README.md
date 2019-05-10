@@ -42,7 +42,8 @@ comm -13 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_Y_R
 comm -23 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_READS}
 ```
 * POREquality:
-https://github.com/carsweshau/POREquality, but it takes as input the sequencing_summary.txt (output from any base-caller), if the base-calling is run in parallel, the sequencing_summary is created in peaces, in this case we can merge them by:
+https://github.com/carsweshau/POREquality
+It takes as input the sequencing_summary.txt (output from any base-caller), if the base-calling is run in parallel, the sequencing_summary may be created in peaces, if this case we can merge them by:
 ```{r, engine='bash', count_lines}
 header_file=$(ls *txt.gz | shuf -n 1)
 zcat $header_file | head -1 > ${FINAL_SEQUENCING_SUMMARY}
