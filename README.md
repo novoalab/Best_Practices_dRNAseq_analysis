@@ -126,7 +126,7 @@ done
 
 ### Step 4: RNA Modification Analysis
 
-* EpiNano: https://github.com/enovoa/EpiNano 
+* EpiNano: https://github.com/enovoa/EpiNano  
 It gets as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we filter these results:
 ```{r, engine='bash', count_lines}
 head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
