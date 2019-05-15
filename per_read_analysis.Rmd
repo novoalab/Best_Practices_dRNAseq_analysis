@@ -46,11 +46,11 @@ parser <- add_option(parser, opt_str=c("-n", "--inputname"), type="character",
 options=parse_args(parser)
 
 threshold=options$threshold
-threshold=500
+#threshold=500
 names=options$names
-names="0 % DMS,0.5 % DMS"
+#names="0 % DMS,0.5 % DMS"
 inputs=options$inputs
-inputs="final_output_RNAAB063141,final_output_RNAAB064293"
+#inputs="final_output_RNAAB063141,final_output_RNAAB064293"
 myfilelist <- strsplit(inputs, ",")
 n=length(myfilelist[[1]])
 myfilenames <- strsplit(names, ",")
