@@ -124,7 +124,7 @@ done
 ```
 
 
-### Step 3: RNA Modification Analysis
+### Step 4: RNA Modification Analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano 
 It gets as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we filter these results:
