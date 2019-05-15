@@ -16,9 +16,7 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning = FALSE)
 
 ```{r libraries, eval=TRUE}
 #Rscript -e "rmarkdown::render(input='per_read_analysis.Rmd')" -t 5000 -i final_output_RNA081120181_NM_curlcake,final_output_m6A_final -n "NM,M6A"
-
 #Rscript -e "rmarkdown::render(input='per_read_analysis.Rmd')" -t 500 -i final_output_RNAAB063141,final_output_RNAAB064293 -n "0 % DMS,0.5 % DMS"
-
 library(ggplot2)
 library(grid)
 library(gridExtra)
@@ -42,9 +40,7 @@ parser <- add_option(parser, opt_str=c("-i", "--inputs"), type="character",
 parser <- add_option(parser, opt_str=c("-n", "--inputname"), type="character",
                      dest='names', 
                      help="String with comma separated list of titles of files")
-
 options=parse_args(parser)
-
 threshold=options$threshold
 #threshold=500
 names=options$names
@@ -54,7 +50,6 @@ inputs=options$inputs
 myfilelist <- strsplit(inputs, ",")
 n=length(myfilelist[[1]])
 myfilenames <- strsplit(names, ",")
-
 ```
 
 # `r myfilenames[[1]]`
@@ -67,20 +62,16 @@ for (i in seq(n)){
 update_list <- function(i){
   i <- i[i$alignment_length<500,]
   return(i)}
-
 tables <- lapply(tables, update_list)
-
 sequence_identity <- function(table, name, y){
   g <- ggplot(table, aes(seq_id)) + geom_density() + theme_bw() + xlab("") + geom_vline(xintercept = mean(table$seq_id), colour="red") + ggtitle(name) + annotate("text", x = mean(table$seq_id)-4, y = y, label = "mean", color="red", angle=90)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- sequence_identity(tables[[i]], myfilenames[[1]][i], 0.01)
   l[[i]] <- g
 }
-
 grid.arrange(grobs=l, nrow=1, top=grid.text("Sequence Identity", gp=gpar(fontface="bold")))
 ```
 
@@ -93,16 +84,13 @@ dats <- list()
 for (i in seq(n)){
   dats[[paste("dat",i,sep = "")]] <- melt(tables[[i]][,c(1,2,3)])
   }
-
 read_length <- function(data, name){
   g <- ggplot(data, aes(variable, value)) + geom_boxplot(colour=c("#F8766D","#00BFC4")) + theme_bw() + xlab("") + ggtitle(name) #+ ylim(0,500)
   return(g)}
-
 l <- list()
 for (i in seq(n)){
   g <- read_length(dats[[i]], myfilenames[[1]][i])
   l[[i]] <- g}
-
 grid.arrange(grobs=l, nrow=1, top=grid.text("Read Lengths", gp=gpar(fontface="bold")))
 ```
 
@@ -115,7 +103,6 @@ for (i in seq(n)){
   cat(paste("Wilcoxon test p.value:", p , "  \n"))
   cat(paste("  \n"))
 }
-
 ```
 
 
@@ -126,7 +113,6 @@ smalltabs <- list()
 for (i in seq(n)){
   smalltabs[[paste("dat",i,sep = "")]] <- tables[[i]][,c(1,2,3)]
 }
-
 par(mfrow=c(1,n))
 for(i in seq(n)){
   dcols<-densCols(smalltabs[[i]]$albacore_length, smalltabs[[i]]$guppy_length, colramp=colorRampPalette(blues9[-(1:4)]))
@@ -134,48 +120,39 @@ for(i in seq(n)){
   abline(0,1)
   
 }
-
 for (i in seq(n)){
 cat(paste("Spearman's rank correlation rho for", myfilenames[[]][i], "is", round(cor.test(smalltabs[[i]]$albacore_length, smalltabs[[i]]$guppy_length, method = "spearman", exact = FALSE)$estimate, 4), "  \n"))
 }
-
 ```
 
 ```{r READ_LENGTH_DENSITY}
-
 read_density <- function(data, name){
   g <- ggplot(data, aes(value, colour=variable)) + geom_density() + theme_bw() + xlab("Read Lengths") + ggtitle(name) + theme(legend.title=element_blank()) + scale_color_manual(labels = c("Albacore  ", "Guppy"), values = c("#F8766D", "#00BFC4"))
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- read_density(dats[[i]], myfilenames[[1]][i])
   l[[i]] <- g}
 
-figure <- ggarrange(plotlist=l, ncol=2, nrow=1, common.legend = TRUE, legend="bottom")
+figure <- ggarrange(plotlist=l, ncol=n, nrow=1, common.legend = TRUE, legend="bottom")
 annotate_figure(figure, top = text_grob("Read Length Density", face = "bold"))
-
 ```
 
 
 ```{r GAPS}
-
 dats <- list()
 for (i in seq(n)){
   dats[[paste("dat",i,sep = "")]] <- melt(tables[[i]][,c(1,7,8)])
   }
-
 gaps <- function(data, name){ #, lim
   g <- ggplot(data, aes(variable, value)) + geom_boxplot(col=c("#F8766D", "#00BFC4")) + theme_bw() + xlab("") + ylab("Number of Gaps") + ggtitle(name) #+ ylim(0,lim)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- gaps(dats[[i]], myfilenames[[1]][i]) #, threshold
   l[[i]] <- g}
-
 grid.arrange(grobs=l, nrow=1, top=grid.text("Number of Gaps", gp=gpar(fontface="bold")))
 ```
 
@@ -187,7 +164,6 @@ for (i in seq(n)){
   cat(paste("Wilcoxon test p.value:", p , "  \n"))
   cat(paste("  \n"))
 }
-
 ```
 
 ```{r}
@@ -195,36 +171,29 @@ gaps_density <- function(data, name){ #, lim
   g <- ggplot(data, aes(value, colour=variable)) + geom_density() + theme_bw() + xlab("Number of Gaps") + theme(legend.title=element_blank()) + scale_color_manual(labels = c("Albacore  ", "Guppy"), values = c("#F8766D", "#00BFC4")) + ggtitle(name) #+ xlim(0, lim)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- gaps_density(dats[[i]], myfilenames[[1]][i]) #, 200
   l[[i]] <- g
 }
-
-figure <- ggarrange(plotlist=l, ncol=2, nrow=1, common.legend = TRUE, legend="bottom")
+figure <- ggarrange(plotlist=l, ncol=n, nrow=1, common.legend = TRUE, legend="bottom")
 annotate_figure(figure, top = text_grob("Number of Gaps Density", face = "bold"))
-
 ```
 
 
 ```{r INDELS}
-
 dats <- list()
 for (i in seq(n)){
   dats[[paste("dat",i,sep = "")]] <- melt(tables[[i]][,c(1,12,13)])
   }
-
 indels <- function(data, name){ #, lim
   g <- ggplot(data, aes(variable, value)) + geom_boxplot(col=c("#F8766D", "#00BFC4")) + theme_bw() + xlab("") + ylab("Number of Indels") + ggtitle(name) #+ ylim(0,lim)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- indels(dats[[i]], myfilenames[[1]][i]) #, threshold
   l[[i]] <- g}
-
 grid.arrange(grobs=l, nrow=1, top=grid.text("Number of Indels", gp=gpar(fontface="bold")))
 ```
 
@@ -236,7 +205,6 @@ for (i in seq(n)){
   cat(paste("Wilcoxon test p.value:", p , "  \n"))
   cat(paste("  \n"))
 }
-
 ```
 
 &nbsp;  
@@ -248,35 +216,28 @@ indels_density <- function(data, name){ #, lim
   g <- ggplot(data, aes(value, colour=variable)) + geom_density() + theme_bw() + xlab("Number of Indels") + theme(legend.title=element_blank()) + scale_color_manual(labels = c("Insertions", "Deletions"), values = c("#F8766D", "#00BFC4")) + ggtitle(name) #+ xlim(0, lim)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- indels_density(dats[[i]], myfilenames[[1]][i]) #, 200
   l[[i]] <- g
 }
-
-figure <- ggarrange(plotlist=l, ncol=2, nrow=1, common.legend = TRUE, legend="bottom")
+figure <- ggarrange(plotlist=l, ncol=n, nrow=1, common.legend = TRUE, legend="bottom")
 annotate_figure(figure, top = text_grob("Number of Indels Density", face = "bold"))
-
 ```
 
 ```{r GAPS_5_PRIME}
-
 dats <- list()
 for (i in seq(n)){
   dats[[paste("dat",i,sep = "")]] <- melt(tables[[i]][,c(1,10,11)])
   }
-
 gaps_5 <- function(data, name){
   g <- ggplot(data, aes(variable, value)) + geom_boxplot(col=c("#F8766D", "#00BFC4")) + theme_bw() + xlab("") + ylab("Number of Gaps") + ggtitle(name)
   return(g)
 }
-
 l <- list()
 for (i in seq(n)){
   g <- gaps_5(dats[[i]], myfilenames[[1]][i]) 
   l[[i]] <- g}
-
 grid.arrange(grobs=l, nrow=1, top=grid.text("Number of Gaps in 5'", gp=gpar(fontface="bold")))
 ```
 
@@ -289,7 +250,6 @@ for (i in seq(n)){
   cat(paste("Wilcoxon test p.value:", p , "  \n"))
   cat(paste("  \n"))
 }
-
 ```
 
 ```{r}
@@ -297,12 +257,10 @@ smalltabs <- list()
 for (i in seq(n)){
   smalltabs[[paste("dat",i,sep = "")]] <- tables[[i]][,c(1,10,11)]
 }
-par(mfrow=c(1,2))
+
+par(mfrow=c(1,n))
 for(i in seq(n)){
   dcols<-densCols(smalltabs[[i]]$gaps_albacore_50, smalltabs[[i]]$gaps_guppy_50, colramp=colorRampPalette(blues9[-(1:3)]))
   plot(jitter(smalltabs[[i]]$gaps_albacore_50), smalltabs[[i]]$gaps_guppy_50,col=dcols,cex=1, cex.lab=1, cex.main=1,lwd=5,pch=20, xlab = "Gaps Albacore 5'", ylab="Gaps Guppy 5'", main = myfilenames[[1]][i])
 }
-par(mfrow=c(1,n))
-
-
 ```
