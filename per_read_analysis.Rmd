@@ -60,7 +60,7 @@ for (i in seq(n)){
   tables[[paste("tab",i,sep = "")]] <- read.table(myfilelist[[1]][i], header = T)}
   
 update_list <- function(i){
-  i <- i[i$alignment_length<500,]
+  i <- i[i$alignment_length<threshold,]
   return(i)}
 tables <- lapply(tables, update_list)
 sequence_identity <- function(table, name, y){
