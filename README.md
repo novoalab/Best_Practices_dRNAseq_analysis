@@ -53,26 +53,16 @@ done
 ```
 * Per_read comparison:
 ```{r, engine='bash', count_lines}
-echo $'read_id\talbacore_length\tguppy_length\talignment_length\tmatches\tmismatches\tgaps_albacore\tgaps_guppy\tseq_id\tgaps_albacore_50\tgaps_guppy_50\tinsertions\tdeletions\tinsertions_50\tdeletions_50' > final_output
+echo read_id$'\t'read_length$'\t'mean_quality > final_output
 
-cat ${COMMON_READS} | while read read_id
-do	
-	echo '>albacore' > read_A
-	grep -A1 $read_id ${FASTQ_FILE_BASECOLLER_A} | tail -n1 >> read_A
-	echo '>guppy' > read_B
-	grep -A1 $read_id ${FASTQ_FILE_BASECOLLER_B} | tail -n1 >> read_B
-
-	al=$(sed '2q;d' read_A | wc -c)
-	gl=$(sed '2q;d' read_B | wc -c)
-
-	stretcher read_A read_B output -aformat_outfile fasta
-
-	a=$(python3 compute_identity.py output)
-	echo $a
-	echo $read_id$'\t'$al$'\t'$gl$'\t'$a >> final_output
+cat ${OUTPUT_FILE} | while read read_id
+do
+	l=$( grep -A1 $read_id ${FASTQ_FILE} | tail -n1 | wc -c )
+	grep -A3 $read_id ${FASTQ_FILE} | tail -n1 > quality
+	q=$( python3 mean_qual.py quality
+	echo $read_id$'\t'$l$'\t'$q >> $OUTDIR/${INPUT##*/}_OUTPUT
 done
-rm read_A
-rm read_B
+rm quality
 ```
 If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
 ```{r, engine='bash', count_lines}
@@ -83,8 +73,8 @@ done
 ```
 For plotting the comparison:
 ```{r, engine='bash', count_lines}
-Rscript -e "rmarkdown::render(input='per_read_analysis.Rmd')" -t ${THRESHOLD} -i ${INPUT_FILES} -n ${INPUT_NAMES}
-# where ${THRESHOLD} is the upper boundary for removing outliers, ${INPUT_FILES} is a string containing all the input files we want to compare separated by commas, e.g. final_output_RNAAB063141,final_output_RNAAB064293 and ${INPUT_NAMES} is a string containing the names that we want for all the input files, e.g. "0 % DMS,0.5 % DMS"
+Rscript per_read.R -i ${INPUT_DIR} -n ${INPUT_NAME}
+# where ${INPUT_DIR} is the folder containing the 4 needed files and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
 ```
 
 ### Step 3: Mapping
