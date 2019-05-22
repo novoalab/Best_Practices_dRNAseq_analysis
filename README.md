@@ -60,7 +60,7 @@ do
 	l=$( grep -A1 $read_id ${FASTQ_FILE} | tail -n1 | wc -c )
 	grep -A3 $read_id ${FASTQ_FILE} | tail -n1 > quality
 	q=$( python3 mean_qual.py quality
-	echo $read_id$'\t'$l$'\t'$q >> $OUTDIR/${INPUT##*/}_OUTPUT
+	echo $read_id$'\t'$l$'\t'$q >> final_output
 done
 rm quality
 ```
@@ -74,7 +74,7 @@ done
 For plotting the comparison:
 ```{r, engine='bash', count_lines}
 Rscript per_read.R -i ${INPUT_DIR} -n ${INPUT_NAME}
-# where ${INPUT_DIR} is the folder containing the 4 needed files and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
+# where ${INPUT_DIR} is the folder containing the 4 final_output files (one per base-caller) and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
 ```
 
 ### Step 3: Mapping
