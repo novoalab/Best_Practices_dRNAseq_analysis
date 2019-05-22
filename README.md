@@ -74,7 +74,7 @@ done
 For plotting the comparison:
 ```{r, engine='bash', count_lines}
 Rscript per_read.R -i ${INPUT_DIR} -n ${INPUT_NAME}
-# where ${INPUT_DIR} is the folder containing the 4 final_output files (one per base-caller) and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
+# where ${INPUT_DIR} is the folder containing the 4 final_output files (one per base-caller, and named as follows: ALBACORE_O_OUTPUT, ALBACORE_N_OUTPUT, GUPPY_O_OUTPUT, GUPPY_N_OUTPUT) and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
 ```
 
 ### Step 3: Mapping
