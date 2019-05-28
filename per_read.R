@@ -15,16 +15,10 @@ parser <- add_option(parser, opt_str=c("-n", "--name"), type="character",
                      dest='name',
                      help="Name")
 options=parse_args(parser)
-dir=options$input
+dir=options$input 
 name=options$name
 
-#dir="pseudoU/"
-#name="pU"
-
-# PseudoU
-
-#Loading data
-#By now, in the future automatics:
+#Loading data:
 
 AL_O <- read.delim(paste(dir, "/ALBACORE_O_OUTPUT", sep = ""))
 AL_N <- read.delim(paste(dir, "/ALBACORE_N_OUTPUT", sep = ""))
