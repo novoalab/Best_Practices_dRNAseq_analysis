@@ -18,7 +18,7 @@ The following software and modules have been used:
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
 
-## Steps: 
+## Analysis Steps 
 
 ### Step 1: Base-calling
 
@@ -136,7 +136,7 @@ head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slid
 awk -F"," '$1 ~ /[^T][^T][T][^T][^T]/' per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 ```
 
-## Citation:
+## Citation
 
 We are currently preparing a draft for bioRxiv. 
 
