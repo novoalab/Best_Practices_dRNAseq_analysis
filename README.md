@@ -86,9 +86,12 @@ awk '{ if (NR%4 == 2) {gsub(/U/,"T",$1); print $1} else print }' $i > ${i%.fastq
 rm $i
 done
 ```
-* minimap2:
+* minimap2 (default k):
 ```{r, engine='bash', count_lines}
 minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
+```
+* minimap2 (k= XX):
+```
 ```
 
 * graphmap default:
@@ -114,7 +117,16 @@ done
 ```
 
 
-### Step 4: RNA Modification Analysis
+### Step 4: Analysis of mapping
+
+* Global mismatch frequency:
+``` TO FILL IN
+```
+* Per-base mismatch errors
+```TO FILL IN
+```
+
+### Step 5: RNA Modification Analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano  
 It produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then filter these results:
@@ -122,5 +134,9 @@ It produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file an
 head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 awk -F"," '$1 ~ /[^T][^T][T][^T][^T]/' per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 ```
+
+### Citation
+
+We are currently preparing a draft for bioRxiv. 
 
 
