@@ -1,6 +1,6 @@
 # Best Practices for Direct RNA Sequencing Analysis
 
-### Pre-requisites
+## Pre-requisites
 
 The following software and modules have been used:
 
@@ -18,6 +18,7 @@ The following software and modules have been used:
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
 
+## Steps: 
 
 ### Step 1: Base-calling
 
@@ -135,7 +136,7 @@ head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slid
 awk -F"," '$1 ~ /[^T][^T][T][^T][^T]/' per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 ```
 
-### Citation
+## Citation:
 
 We are currently preparing a draft for bioRxiv. 
 
