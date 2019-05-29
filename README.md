@@ -1,6 +1,6 @@
 # Best Practices for Direct RNA Sequencing Analysis
 
-### Pre-requisits
+### Pre-requisites
 
 The following software and modules have been used:
 
