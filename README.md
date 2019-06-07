@@ -1,4 +1,4 @@
-# Best Practices for Direct RNA Sequencing Analysis
+# Best Practices for the Analysis of Oxfor Nanopore Direct RNA Sequencing Data
 
 ## Pre-requisites
 
@@ -7,21 +7,27 @@ The following software and modules have been used:
 |**Software**| **Version** |
 |:---------:|-------------|
 | python    | 3.6.4 |
-| albacore v1 | 2.1.7 |
-| albacore v2 | 2.3.4 |
-| guppy v2 | 2.3.1  |
-| guppy v3  | 3.0.3  |
+| ont_fast5_api | 1.4.1 |
+| albacore | 2.1.7 |
+| albacore | 2.3.4 |
+| guppy | 2.3.1  |
+| guppy  | 3.0.3  |
 | POREquality | 0.9.8 |
 | EMBOSS stretcher | 6.6.0.0 |
 | biopython | 1.73 |
 | minimap2  | 2.16-r922    |
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
+| EpiNano | 1.1 |
 
 ## Analysis Steps 
 
 ### Step 1: Base-calling
 
+Albacore doesn't support multifast5 files, if these are the input files, conversion from single_fast5 to multi_fast5 is needed:
+>
+	multi_to_single_fast5 -i ${folder_with_multifast5_files} -s ${output_folder} -t ${threads_number} 
+	
 * Albacore v2.1.7 & v2.3.4:
 ```{r, engine='bash', count_lines}
 read_fast5_basecaller.py --flowcell ${FLOWCELL} --kit ${KIT} --output_format fastq,fast5 -n ${NUMFAST5} --input ${INPUT_DIRECTORY} --save_path ${OUTPUT_DIRECTORY} --worker_threads ${NUMBER_OF_THREADS} --disable_filtering
