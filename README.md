@@ -99,6 +99,7 @@ minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
 ```
 * minimap2 (k= XX):
 ```
+minimap2 -ax map-ont -k 5 ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
 ```
 
 * graphmap default:
