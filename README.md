@@ -93,11 +93,11 @@ awk '{ if (NR%4 == 2) {gsub(/U/,"T",$1); print $1} else print }' $i > ${i%.fastq
 rm $i
 done
 ```
-* minimap2 (default k):
+* minimap2 default:
 ```{r, engine='bash', count_lines}
 minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
 ```
-* minimap2 (k= XX):
+* minimap2 sensitive (k=5):
 ```
 minimap2 -ax map-ont -k 5 ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
 ```
@@ -127,17 +127,17 @@ done
 
 ### Step 4: Analysis of mapping
 
-* Global mismatch frequency:
-``` TO FILL IN
+* Mismatch Frequencies
 ```
-* Per-base mismatch errors
-```TO FILL IN
+./from_bam_to_stats.sh   #This command will output a .mismatch and a .STATS file per every .bam file.
+Rscript mismatch.R -i ${input_dir} -n ${name}   #This R script takes as input a directory with the .mismatches and .STATS files from all base-callers for a given dataset and a string for the dataset name that will be used in the plots titles. 
+#The output plots contain the global mismatch frequency per base-caller, the mismatch frequency per nucleotide and ternary plots.
 ```
 
 ### Step 5: RNA Modification Analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano  
-It produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then filter these results:
+It produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then have to filter these results:
 ```{r, engine='bash', count_lines}
 head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 awk -F"," '$1 ~ /[^T][^T][T][^T][^T]/' per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
