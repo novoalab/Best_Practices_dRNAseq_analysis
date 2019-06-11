@@ -19,6 +19,12 @@ The following software and modules have been used:
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
 | EpiNano | 1.1 |
+| ggplot2 | 3.1.1 |
+| optparse | 1.6.2 |
+| ggpubr | 0.2 |
+| reshape2 | 1.4.3 |
+| ggtern | 3.1.0 |
+
 
 ## Analysis Steps 
 
