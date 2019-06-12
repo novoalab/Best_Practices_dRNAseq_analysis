@@ -143,10 +143,11 @@ Rscript mismatch.R -i ${input_dir} -n ${name}   #This R script takes as input a 
 ### Step 5: RNA Modification Analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano  
-It produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then have to filter these results:
-```{r, engine='bash', count_lines}
+We use epinano to get per_site information, it produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then have to filter these results:
+```
+base=T  #base is going to be the nucleotide we want to study depending of the RNA modification
 head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
-awk -F"," '$1 ~ /[^T][^T][T][^T][^T]/' per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
+awk -F"," "\$1 ~ /[^/$base/][^/$base/][/$base/][^/$base/][^/$base/]/" per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 ```
 
 ## Citation
