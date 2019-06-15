@@ -136,8 +136,9 @@ done
 * Mismatch Frequencies
 ```
 ./from_bam_to_stats.sh   #This command will output a .mismatch and a .STATS file per every .bam file.
-Rscript mismatch.R -i ${input_dir} -n ${name}   #This R script takes as input a directory with the .mismatches and .STATS files from all base-callers for a given dataset and a string for the dataset name that will be used in the plots titles. 
-#The output plots contain the global mismatch frequency per base-caller, the mismatch frequency per nucleotide and ternary plots.
+Rscript mismatch.R -i ${input_dir} -n ${name} -m ${mod}  #This R script takes as input a directory with the .mismatches and .STATS files from all base-callers for a given dataset; a string for the dataset name that will be used in the plots titles, and the nucleotide where the modifications is introduced {A, C, G or T}. 
+#The output plots contain the global mismatch frequency per base-caller, the mismatch frequency per nucleotide and ternary diagrams for every base-caller and nucleotide.
+Rscript ternary.R -m ${mapper} -b ${basecaller} #This script outputs the ternary diagrams comparing modifications, e.g.: UNM vs m6A
 ```
 
 ### Step 5: RNA Modification Analysis
@@ -148,6 +149,38 @@ We use epinano to get per_site information, it produces as output a per_site.var
 base=T  #base is going to be the nucleotide we want to study depending of the RNA modification
 head -1 per_site.var.csv.slided.onekmer.oneline.5mer.csv > per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
 awk -F"," "\$1 ~ /[^/$base/][^/$base/][/$base/][^/$base/][^/$base/]/" per_site.var.csv.slided.onekmer.oneline.5mer.csv >> per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
+mv per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv > ${name}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv #we change here the name according to the specific modification
+```
+We then divide our data into training and test:
+```
+cut -d "," -f 5-14,20-24 ${unm}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv > test
+tail -n +2 test > test2
+sed 's/$/,UNM/' test2 > test3
+a=$( wc -l test3 )
+b=$( echo $a | awk '{print $1;}' )
+t=$( echo "$b * 0.75" | bc -l | xargs printf "%.*f\n" 0 )   # 75 % for training
+p=$( echo "$b * 0.25" | bc -l | xargs printf "%.*f\n" 0 )   # 25 % for predicting
+echo q1,q2,q3,q4,q5,mis1,mis2,mis3,mis4,mis5,del1,del2,del3,del4,del5,sample > training
+echo q1,q2,q3,q4,q5,mis1,mis2,mis3,mis4,mis5,del1,del2,del3,del4,del5,sample > predicting
+head -$t test3 >> training 
+tail -$p test3 >> predicting
+
+cut -d "," -f 5-14,20-24 ${mod}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv > test
+tail -n +2 test > test2
+sed 's/$/,MOD/' test2 > test3
+head -$t test3 >> training 
+tail -$p test3 >> predicting
+rm test test2 test3 
+```
+And we finally run Epinano SVM script:
+```
+SVM.py -a -t training -p predicting -cl 1-15 -mc 16 -o $mod
+```
+
+* Analysis
+```
+Rscript kmer.R -i ${input_directory} #The input directory would contain ${unm}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv and ${mod}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
+Rscript PCA.R -b ${basecaller} #This script takes as input the name of the base-caller used, name that will be used for the output directory containing the PCA plots. 
 ```
 
 ## Citation
