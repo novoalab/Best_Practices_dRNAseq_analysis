@@ -20,6 +20,7 @@ The following software and modules have been used:
 | samtools | 1.9 |
 | EpiNano | 1.1 |
 | ggplot2 | 3.1.1 |
+| ggExtra | 0.8 |
 | optparse | 1.6.2 |
 | ggpubr | 0.2 |
 | reshape2 | 1.4.3 |
@@ -172,7 +173,7 @@ head -$t test3 >> training
 tail -$p test3 >> predicting
 rm test test2 test3 
 ```
-And we finally run Epinano SVM script:
+And we finally run Epinano's SVM script:
 ```
 SVM.py -a -t training -p predicting -cl 1-15 -mc 16 -o $mod
 ```
