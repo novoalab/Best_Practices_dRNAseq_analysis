@@ -55,16 +55,6 @@ comm -12 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${COMMON_READS}
 comm -13 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_Y_READS}
 comm -23 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_READS}
 ```
-* POREquality:
-https://github.com/carsweshau/POREquality
-It takes as input the sequencing_summary.txt (output from any base-caller), if the base-calling is run in parallel, the sequencing_summary may be created in peaces, if this is the case we can merge them by:
-```{r, engine='bash', count_lines}
-header_file=$(ls *txt.gz | shuf -n 1)
-zcat $header_file | head -1 > ${FINAL_SEQUENCING_SUMMARY}
-for i in sequencing_summary*; do
-zcat $i | tail -n +2 >> ${FINAL_SEQUENCING_SUMMARY}
-done
-```
 * Per_read comparison:
 ```{r, engine='bash', count_lines}
 echo read_id$'\t'read_length$'\t'mean_quality > final_output
