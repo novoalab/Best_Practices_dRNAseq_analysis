@@ -131,7 +131,7 @@ Rscript mismatch.R -i ${input_dir} -n ${name} -m ${mod}  #This R script takes as
 Rscript ternary.R -m ${mapper} -b ${basecaller} #This script outputs the ternary diagrams comparing modifications, e.g.: UNM vs m6A
 ```
 
-### Step 5: RNA Modification Analysis
+### Step 5: RNA modification analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano  
 We use epinano to get per_site information, it produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file and we then have to filter these results:
