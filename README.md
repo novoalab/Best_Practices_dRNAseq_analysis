@@ -181,7 +181,7 @@ SVM.py -a -t training -p predicting -cl 1-15 -mc 16 -o $mod
 * Analysis
 ```
 Rscript kmer.R -i ${input_directory} #The input directory would contain ${unm}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv and ${mod}_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv
-Rscript PCA.R -b ${basecaller} #This script takes as input the name of the base-caller used, name that will be used for the output directory containing the PCA plots. 
+Rscript PCA.R -b ${basecaller} -m ${mapper} #This script takes as input the name of the base-caller and mapper used, names that will be used for the output directory containing the PCA plots. 
 ```
 
 ## Citation
