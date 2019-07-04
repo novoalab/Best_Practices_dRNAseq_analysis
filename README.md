@@ -45,6 +45,15 @@ guppy_basecaller --flowcell ${FLOWCELL} --kit ${KIT} --fast5_out --input ${INPUT
 ```
 ### Step 2: Analysis of base-calling
 
+* Number of sequenced reads:
+```
+#If single fast5s:
+find . -type f | wc -l 
+#If single fast5s in tared directories:
+touch number_of_sequenced_reads.txt
+for i in *.tar; do tar -tf $i >> number_of_sequenced_reads.txt; done
+wc -l number_of_sequenced_reads.txt # Minus number of tared directories
+```
 * Number of common base-called reads between approaches:
 ```{r, engine='bash', count_lines}
 awk '{if(NR%4==1) print $1}' ${FASTQ_FILE} | sed -e "s/^@//" > ${OUTPUT_FILE}    #It lists all base-called reads from a fastq file
