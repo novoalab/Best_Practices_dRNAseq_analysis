@@ -12,7 +12,6 @@ The following software and modules have been used:
 | albacore | 2.3.4 |
 | guppy | 2.3.1  |
 | guppy  | 3.0.3  |
-| EMBOSS stretcher | 6.6.0.0 |
 | biopython | 1.73 |
 | minimap2  | 2.16-r922    |
 | graphmap  | 0.5.2  |
