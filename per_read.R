@@ -59,7 +59,7 @@ title=paste("Mean Quality", name)
 g <- ggplot(table, aes(basecaller, log(mean_quality))) + 
   geom_boxplot(outlier.size = 0.7, colour=c("cyan3","cyan4", "red", "red3"), 
                fill=c("cyan3","cyan4", "red", "red3"), alpha=0.4) + 
-  ylab("Mean Quality (log)") + ggtitle(title) + xlab("") + theme_bw() + 
+  ylab("mean quality (log)") + ggtitle(title) + xlab("") + theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5, size = 9), 
         axis.text=element_text(size=3.5), 
         axis.title=element_text(size=6))
