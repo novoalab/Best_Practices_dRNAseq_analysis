@@ -56,10 +56,10 @@ ggsave("read_length.png", g, device = "png", path = dir, width = 1.8, height = 2
 #Plotting qualities
 
 title=paste("Mean Quality", name)
-g <- ggplot(table, aes(basecaller, mean_quality)) + 
+g <- ggplot(table, aes(basecaller, log(mean_quality))) + 
   geom_boxplot(outlier.size = 0.7, colour=c("cyan3","cyan4", "red", "red3"), 
                fill=c("cyan3","cyan4", "red", "red3"), alpha=0.4) + 
-  ylab("Mean Quality") + ggtitle(title) + xlab("") + theme_bw() + 
+  ylab("Mean Quality (log)") + ggtitle(title) + xlab("") + theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5, size = 9), 
         axis.text=element_text(size=3.5), 
         axis.title=element_text(size=6))
@@ -95,3 +95,7 @@ marginal_plot(x = read_length, y = mean_quality, group = Condition, data = GU_N,
               xlab = "Read Length (log)", ylab = "Mean Quality (log)", pch = 15, cex = 0.5, log="xy")
 dev.off()
 
+
+#Short reads in GU 3.0.3
+  
+GU_N_short <- GU_N[GU_N$read_length<10,]
