@@ -1,4 +1,4 @@
-# Best Practices for the Analysis of Oxfor Nanopore Direct RNA Sequencing Data
+# Best Practices for the Analysis of Oxford Nanopore Direct RNA Sequencing Data
 
 ## Pre-requisites
 
