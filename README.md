@@ -1,5 +1,13 @@
 # Best Practices for the Analysis of Oxford Nanopore Direct RNA Sequencing Data
 
+This repository contains scripts to analyze the output of base-called direct RNA sequencing reads, including:
+- 1) base-calling quality assessment
+- 2) mapping quality assessment
+- 3) RNA modification analyses
+- 4) PolyA tail estimations
+
+The analysis can be ran for a single fast5/fastq file, of in a comparative mode (e.g. comparison of different base-callers, comparison of different mappers, etc)
+
 ## Pre-requisites
 
 The following software and modules have been used:
