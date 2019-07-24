@@ -78,7 +78,7 @@ cat ${OUTPUT_FILE} | while read read_id
 do
 	l=$( grep -A1 $read_id ${FASTQ_FILE} | tail -n1 | wc -c )
 	grep -A3 $read_id ${FASTQ_FILE} | tail -n1 > quality
-	q=$( python3 mean_qual.py quality
+	q=$( python3 mean_qual.py quality )
 	echo $read_id$'\t'$l$'\t'$q >> final_output
 done
 rm quality
