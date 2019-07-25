@@ -12,6 +12,7 @@ The analysis can be ran for a single fast5/fastq file, of in a comparative mode 
 
 The following software and modules have been used:
 
+<table>
 |**Software**| **Version** |
 |:---------:|-------------|
 | python    | 3.6.4 |
@@ -22,7 +23,8 @@ The following software and modules have been used:
 | guppy  | 3.0.3  |
 | biopython | 1.73 |
 | minimap2  | 2.16-r922    |
-</td><td>
+</table>
+<table>
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
 | EpiNano | 1.1 |
@@ -32,7 +34,7 @@ The following software and modules have been used:
 | ggpubr | 0.2 |
 | reshape2 | 1.4.3 |
 | ggtern | 3.1.0 |
-
+<\table>
 
 ## Analysis Steps 
 
