@@ -6,7 +6,7 @@ This repository contains scripts to analyze the output of base-called direct RNA
 - 3) RNA modification analyses
 - 4) PolyA tail estimations
 
-The analysis can be ran for a single fast5/fastq file, of in a comparative mode (e.g. comparison of different base-callers, comparison of different mappers, etc)
+The analysis can be ran for a single fastq file, of in a comparative mode (e.g. comparison of different base-callers, comparison of different mappers, etc)
 
 ## Pre-requisites
 
