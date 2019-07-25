@@ -22,6 +22,7 @@ The following software and modules have been used:
 | guppy  | 3.0.3  |
 | biopython | 1.73 |
 | minimap2  | 2.16-r922    |
+</td><td>
 | graphmap  | 0.5.2  |
 | samtools | 1.9 |
 | EpiNano | 1.1 |
@@ -57,7 +58,7 @@ guppy_basecaller --flowcell ${FLOWCELL} --kit ${KIT} --fast5_out --input ${INPUT
 ./basecalling_analysis_single.sh ${FASTQ_FILE}
 #example: ./basecalling_analysis_single.sh example_data/test_1.fastq
 ```
-* Comparison of fastq files
+* Comparison of fastq files (the second part of this script is though to compare base-callers as read_ids are used)
 ```{r}
 ./basecalling_analysis_comparison.sh ${OUTPUT_DIRECTORY} ${ALL_FASTQ_FILES} ${ALL_FASTQ_NAMES_FOR_PLOTTING}
 #example: ./basecalling_analysis_comparison.sh output/ example_data/test_1.fastq example_data/test_1.fastq dataset_1 dataset_2
