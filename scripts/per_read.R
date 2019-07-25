@@ -77,14 +77,12 @@ g <- ggplot(table, aes(dataset, log(mean_quality))) +
         axis.title=element_text(size=6))
 ggsave("quality.png", g, device = "png", path = dir, width = 1.8, height = 2.5)
 
+
+
 # Plotting comparisons between versions
 
-#The following plots will compare the reads base-called by both versions of each base-caller against the reads only 
-#base-called by the new version.
+# The following plots will do pairwise comparisons, comparing the reads that are present in one fastq file but not in the other and the common reads
 
-# Albacore
-
-#we check whether a read in the new version of Albacore was also base-called by the old version or it is new.
 for (i in 1:length(files)){
   for (j in 1:length(files)){
     if (i!=j){
