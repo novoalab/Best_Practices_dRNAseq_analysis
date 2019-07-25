@@ -12,7 +12,8 @@ The analysis can be ran for a single fast5/fastq file, of in a comparative mode 
 
 The following software and modules have been used:
 
-
+|Software|R Modules|
+|--|--|
 |<table> <tr><th>Software</th><th>Version</th></tr><tr><td>python</td><td>3.6.4</td></tr><tr><td>ont_fast5_api</td><td>1.4.1</td></tr><tr><td>albacore</td><td>2.1.7</td></tr><tr><td>albacore</td><td>2.3.4</td></tr><tr><td>guppy</td><td>2.3.1</td></tr><tr><td>guppy</td><td>3.0.3</td></tr><tr><td>biopython</td><td>1.73</td></tr><tr><td>minimap2</td><td>2.16-r922</td></tr><tr><td>graphmap</td><td>0.5.2</td></tr><tr><td>samtools</td><td>1.9</td></tr><tr><td>EpiNano</td><td>1.1</td></tr> </table>| <table> <tr><th>Module</th><th>Version</th></tr><tr><td>ggplot2</td><td>3.1.1</td></tr><tr><td>ggExtra</td><td>0.8</td></tr><tr><td>optparse</td><td>1.6.2</td></tr><tr><td>ggpubr</td><td>0.2</td></tr><tr><td>reshape2</td><td>1.4.3</td></tr><tr><td>ggtern</td><td>3.1.0</td></tr> </table>|
 
 ## Analysis Steps 
