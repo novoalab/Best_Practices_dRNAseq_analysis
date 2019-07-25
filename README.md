@@ -52,48 +52,15 @@ guppy_basecaller --flowcell ${FLOWCELL} --kit ${KIT} --fast5_out --input ${INPUT
 ```
 ### Step 2: Analysis of base-calling
 
-* Number of sequenced reads:
+* Single fastq file
+```{r}
+./basecalling_analysis_single.sh ${FASTQ_FILE}
+#example: ./basecalling_analysis_single.sh example_data/test_1.fastq
 ```
-#If single fast5s:
-find . -type f | wc -l 
-#If single fast5s in tared directories:
-touch number_of_sequenced_reads.txt
-for i in *.tar; do tar -tf $i >> number_of_sequenced_reads.txt; done
-wc -l number_of_sequenced_reads.txt # Minus number of tared directories
-```
-* Number of common base-called reads between approaches:
-```{r, engine='bash', count_lines}
-awk '{if(NR%4==1) print $1}' ${FASTQ_FILE} | sed -e "s/^@//" > ${OUTPUT_FILE}    #It lists all base-called reads from a fastq file
-sort ${OUTPUT_FILE} > ${SORTED_OUTPUT_FILE}
-wc -l ${SORTED_OUTPUT_FILE}
-comm -12 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${COMMON_READS}
-comm -13 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_Y_READS}
-comm -23 ${SORTED_OUTPUT_FILE_X} ${SORTED_OUTPUT_FILE_Y} > ${ONLY_PRESENT_IN_X_READS}
-```
-* Per_read comparison:
-```{r, engine='bash', count_lines}
-echo read_id$'\t'read_length$'\t'mean_quality > final_output
-
-cat ${OUTPUT_FILE} | while read read_id
-do
-	l=$( grep -A1 $read_id ${FASTQ_FILE} | tail -n1 | wc -c )
-	grep -A3 $read_id ${FASTQ_FILE} | tail -n1 > quality
-	q=$( python3 mean_qual.py quality )
-	echo $read_id$'\t'$l$'\t'$q >> final_output
-done
-rm quality
-```
-If it is executed in parallel and we get different final_output_${SGE_TASK_ID}, we can simply merge them:
-```{r, engine='bash', count_lines}
-for i in final_output_*
-do cat $i >> final_output
-rm $i
-done
-```
-For plotting the comparison:
-```{r, engine='bash', count_lines}
-Rscript per_read.R -i ${INPUT_DIR} -n ${INPUT_NAME}
-# where ${INPUT_DIR} is the folder containing the 4 final_output files (one per base-caller, and named as follows: ALBACORE_O_OUTPUT, ALBACORE_N_OUTPUT, GUPPY_O_OUTPUT, GUPPY_N_OUTPUT) and where the output images will be placed, and ${INPUT_NAME} is the name of the dataset that the plots will contain as title
+* Comparison of fastq files
+```{r}
+./basecalling_analysis_comparison.sh ${OUTPUT_DIRECTORY} ${ALL_FASTQ_FILES} ${ALL_FASTQ_NAMES_FOR_PLOTTING}
+#example: ./basecalling_analysis_comparison.sh output/ example_data/test_1.fastq example_data/test_1.fastq dataset_1 dataset_2
 ```
 
 ### Step 3: Mapping
