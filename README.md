@@ -12,6 +12,8 @@ The analysis can be ran for a single fast5/fastq file, of in a comparative mode 
 
 The following software and modules have been used:
 
+|Table 1|Table 2|
+|--|--|
 <table>
 |**Software**| **Version** |
 |:---------:|-------------|
