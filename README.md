@@ -61,9 +61,9 @@ done
 ```{r, engine='bash', count_lines}
 minimap2 -ax map-ont ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
 ```
-* minimap2 sensitive (k=5):
+* minimap2 sensitive:
 ```
-minimap2 -ax map-ont -k 5 ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam
+minimap2 -ax map-ont -k 5 ${FASTA_REFERENCE} ${FASTQ_FILE} > ${FASTQ_FILE%.U2T*}.sam   #-w5 and -m20 are also good for increasing sensitivity
 ```
 
 * graphmap default:
