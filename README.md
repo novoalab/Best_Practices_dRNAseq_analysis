@@ -42,7 +42,7 @@ guppy_basecaller --flowcell ${FLOWCELL} --kit ${KIT} --fast5_out --input ${INPUT
 ./basecalling_analysis_single.sh ${FASTQ_FILE}
 #example: ./basecalling_analysis_single.sh example_data/test_1.fastq
 ```
-* Comparison of fastq files (the second part of this script is though to compare base-callers as read_ids are used)
+* Comparison of fastq files (the second part of this script is thought to compare base-callers as read_ids are used)
 ```{r}
 ./basecalling_analysis_comparison.sh ${OUTPUT_DIRECTORY} ${ALL_FASTQ_FILES} ${ALL_FASTQ_NAMES_FOR_PLOTTING}
 #example: ./basecalling_analysis_comparison.sh output/ example_data/test_1.fastq example_data/test_1.fastq dataset_1 dataset_2
