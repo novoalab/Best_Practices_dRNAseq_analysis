@@ -101,7 +101,7 @@ done
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 
 #For comparing modifications with ternary plots:
-Rscript ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
+Rscript scripts/ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
 ```
 
 ### Step 5: RNA modification analysis
