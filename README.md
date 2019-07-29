@@ -115,8 +115,8 @@ We use epinano to get per_site information, it produces as output a per_site.var
 
 * Comparison between two .csv files (By now, it only accepts two, either unm vs mod or replicates)
 ```
-./modification_analysis_comparison.sh ${MODIFIED_BASE} ${UNMODIFIED_CSV_FILE} ${MODIFIED_CSV_FILE} ${BOOLEAN_FOR_BUILDING_MODEL} ${DATASET_NAMES}
-#example 1: pipeline/modification_analysis_comparison.sh "A" example_data/unm_per_site.var.csv.slided.onekmer.oneline.5mer.csv example_data/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.csv output/ false "UNM,m6A"
+./modification_analysis_comparison.sh -b ${MODIFIED_BASE} -u ${UNMODIFIED_CSV_FILE} -m ${MODIFIED_CSV_FILE} -e ${BOOLEAN_FOR_BUILDING_MODEL} -n ${DATASET_NAMES}
+#example 1: pipeline/modification_analysis_comparison.sh -b "A" -u example_data/unm_per_site.var.csv.slided.onekmer.oneline.5mer.csv -m example_data/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.csv -o output/ -e false -n "UNM,m6A"
 ```
 
 ## Citation
