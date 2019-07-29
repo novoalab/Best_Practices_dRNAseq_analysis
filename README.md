@@ -102,6 +102,10 @@ done
 
 #For comparing modifications with ternary plots:
 Rscript scripts/ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
+
+#For checking replicability in two datasets:
+Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The input directory contains the output of ./mapping_analysis_comparison (.mismatches and .STATS output)
+
 ```
 
 ### Step 5: RNA modification analysis
