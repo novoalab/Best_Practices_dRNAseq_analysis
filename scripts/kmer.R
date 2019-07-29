@@ -148,5 +148,8 @@ print(m)
 
 pdf(paste(output, "PCA_", n[[1]][1], "_", n[[1]][2], ".pdf", sep=""))
 pca = prcomp(data[,c(5,6,7,8,9,10,11,12,13,14,20,21,22,23,24)])
-plot(pca$x, col=data$condition, pch=19) 
+eigs <- pca$sdev^2
+p1 <- eigs[1] / sum(eigs)
+p2 <- eigs[2] / sum(eigs)
+plot(pca$x, col=data$condition, pch=19, ylab=paste("PC2 (",round(p2,2)*100,"%)"), xlab=paste("PC1 (",round(p1,2)*100,"%)"), xaxt='n') 
 dev.off()
