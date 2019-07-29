@@ -96,9 +96,9 @@ done
 
 * Comparison of sorted.bam files
 ```
-./mapping_analysis_comparison.sh ${DIRECTORY_EITH_SORTED.BAM_FILES} ${OUTPUT_DIR} ${REFERENCE_FASTA} ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
-#example 1: ./mapping_analysis_comparison.sh example_data/ output/ example_data/reference.fasta "graphmap,minimap2"
-#example 2: ./mapping_analysis_comparison.sh example_data/ output/ example_data/reference.fasta "graphmap,minimap2" "A" "my_title" 0.1 0.8
+./mapping_analysis_comparison.sh -i ${DIRECTORY_WITH_SORTED.BAM_FILES} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
+#example 1: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2"
+#example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 
 #For comparing modifications with ternary plots:
 Rscript ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
