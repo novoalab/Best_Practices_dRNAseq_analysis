@@ -90,12 +90,18 @@ done
 
 ### Step 4: Analysis of mapping
 
-* Mismatch Frequencies
+* Single sorted.bam file
 ```
-./from_bam_to_stats.sh   #This command will output a .mismatch and a .STATS file per every .bam file.
-Rscript mismatch.R -i ${input_dir} -n ${name} -m ${mod}  #This R script takes as input a directory with the .mismatches and .STATS files from all base-callers for a given dataset; a string for the dataset name that will be used in the plots titles, and the nucleotide where the modifications is introduced {A, C, G or T}. 
-#The output plots contain the global mismatch frequency per base-caller, the mismatch frequency per nucleotide and ternary diagrams for every base-caller and nucleotide.
-Rscript ternary.R -m ${mapper} -b ${basecaller} #This script outputs the ternary diagrams comparing modifications, e.g.: UNM vs m6A
+```
+
+* Comparison of sorted.bam files
+```
+./mapping_analysis_comparison.sh ${DIRECTORY_EITH_SORTED.BAM_FILES} ${OUTPUT_DIR} ${REFERENCE_FASTA} ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
+#example 1: ./mapping_analysis_comparison.sh example_data/ output/ example_data/reference.fasta "graphmap,minimap2"
+#example 2: ./mapping_analysis_comparison.sh example_data/ output/ example_data/reference.fasta "graphmap,minimap2" "A" "my_title" 0.1 0.8
+
+#For comparing modifications with ternary plots:
+Rscript ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
 ```
 
 ### Step 5: RNA modification analysis
