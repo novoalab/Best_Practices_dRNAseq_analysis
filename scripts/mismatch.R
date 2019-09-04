@@ -1,35 +1,23 @@
 #####################################################################################
-#This script takes as input a directory containing files finishing with .STATS and 
-# and with .mismatches (output of previous step) and it compares the mismatch frequency 
-# per base-caller/dataset and nucleotide, the mismatch pattern, the bases more modified 
-# than a given frequency and it outputs ternary diagrams per base-caller/dataset.
+#This script takes as input a directory containing 8 files, one finishing
+#with .STATS and another one finishing with .mismatches per base-caller 
+#(output of previous step) and it compares the mismatch frequency per base-caller
+#and nucleotide, the mismatch pattern, the bases more modified than a given frequency
+#and it outputs ternary diagrams per base-caller.
 #The mismatch pattern and the ternary diagrams are computed using the k-mers 
-#that contain -m in its central position.  
-#The parameters needed are an input directory -i, a string with the names of each dataset
-#separated by commas -n, an optional title name -t that will be added in the plots,
-#a base that is being modificied to focus on it -m, an option -e that studies the input
-#as epinano output if it is present (taken k-mers with only -m base in its central position),
-#a threshold k for removing positions with lower coverage than this percentage of the mean
-#coverage (default=0.1), and a zoom -z for plotting the mismatch pattern (default=0.8)
+#that contain -m in its center position.  
 ######################################################################################
 
 
-#implement it in my .sh correctly, add to github, finish next R scripts that are going to be in the .sh too
-
 ## Loading libraries
-
-required.packages <- c("ggplot2","ggExtra","optparse","reshape2","ggtern","lattice","latticeExtra")
-new.packages <- required.packages[!(required.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-suppressMessages(library(ggplot2))
+library(ggplot2)
 library(ggpubr)
 library(optparse)
 library(reshape2)
-suppressMessages(library(ggtern))
+library(ggtern)
 library(lattice)
-suppressMessages(library(latticeExtra))
-options(warn=-1)
+library(latticeExtra)
+
 
 ## Parsing
 
@@ -37,134 +25,125 @@ parser <- OptionParser()
 parser <- add_option(parser, opt_str=c("-i", "--input"), type="character",
                      dest='input',
                      help="Input Directory")
-parser <- add_option(parser, opt_str=c("-n", "--names"), type="character",
-                     dest='names',
-                     help="Names")
-parser <- add_option(parser, opt_str=c("-t", "--title"), type="character",
-                     default="",
-                     dest='title',
-                     help="Title")
+parser <- add_option(parser, opt_str=c("-n", "--name"), type="character",
+                     dest='name',
+                     help="Name")
 parser <- add_option(parser, opt_str=c("-m", "--modification"), type="character",
-                     default="",
                      dest='mod',
                      help="mod")
-parser <- add_option(parser, opt_str=c("-e", "--epinano"), type="character",
-                     action="store_true",
-                     dest='epinano',
-                     help="if -e is present, everything is computed as epinano output")
-parser <- add_option(parser, opt_str=c("-k", "--threshold"), type="double",
-                     default=0.1,
-                     dest='threshold',
-                     help="threshold that will be used for removing rows with lower coverage than mean_coverage * this_threshold [0.1]")
-parser <- add_option(parser, opt_str=c("-z", "--zoom"), type="double",
-                     default=0.8,
-                     dest='zoom',
-                     help="lower limit in y axis for mismatch_pattern_100.pdf [0.8]")
-
 options=parse_args(parser)
 dir=options$input
-names=options$names
-title=options$title
-threshold=options$threshold
-epinano=options$epinano
+name=options$name
 mod=options$mod
-zoom=options$zoom
-#dir="~/Documentos/Uni/Internship/Project/Files/scripts/output"
-#names="minimap2,graphmap"
-#epinano=TRUE
-#title=""
-#mod="A"
-#threshold=0.1
-#zoom=0.8
-n <- strsplit(names, ",")
+dir="/home/pepe/Documentos/Uni/Internship/Project/Files/Mismatch/graphmap/m6A/"
+name="m6A"
+mod="A"
+# In the input directory there should be a file ending in .mismatches and another one ending in .STATS per base-caller.
+AL_2.1.7_S <- list.files(path=dir, pattern = "*albacore_2.1.7.*STATS")
+AL_2.1.7_M <- list.files(path=dir, pattern = "albacore_2.1.7.*mismatches")
 
-# In the input directory there should be a file ending in .mismatches and another one ending in .STATS per dataset/base-caller.
-filesmis <- list.files(path=dir, pattern = ".*mismatches")
-filesstats <- list.files(path=dir, pattern = ".*STATS")
+AL_2.3.4_S <- list.files(path=dir, pattern = "albacore_2.3.4.*STATS")
+AL_2.3.4_M <- list.files(path=dir, pattern = "albacore_2.3.4.*mismatches")
 
+GU_2.3.1_S <- list.files(path=dir, pattern = "guppy_2.3.1.*STATS")
+GU_2.3.1_M <- list.files(path=dir, pattern = "guppy_2.3.1.*mismatches")
 
-lmis <- list()
-lstats <- list()
-for (i in 1:length(filesmis)){
-  assign(filesmis[i],read.delim(paste(dir, filesmis[i], sep="/")))
-  assign(filesstats[i],read.delim(paste(dir, filesstats[i], sep="/")))
-  lmis[[i]] <- get(filesmis[i])
-  lstats[[i]] <- get(filesstats[i])
-  lstats[[i]]$dataset <- n[[1]][i]
-}
+GU_3.0.3_S <- list.files(path=dir, pattern = "guppy_3.0.3.*STATS")
+GU_3.0.3_M <- list.files(path=dir, pattern = "guppy_3.0.3.*mismatches")
 
-datasets <- list()
+names <- c("AL_2.1.7_S", "AL_2.1.7_M", "AL_2.3.4_S", "AL_2.3.4_M", "GU_2.3.1_S", "GU_2.3.1_M", "GU_3.0.3_S", "GU_3.0.3_M")
+l <- list(AL_2.1.7_S, AL_2.1.7_M, AL_2.3.4_S, AL_2.3.4_M, GU_2.3.1_S, GU_2.3.1_M, GU_3.0.3_S, GU_3.0.3_M)
+
+for (i in 1:length(l)){
+  assign(names[i],read.delim(paste(dir, l[[i]], sep="/")))}
+
 # We merge .mismatches and .STATS files 
-for (i in 1:length(n[[1]])){
-  assign(n[[1]][i], merge(lmis[[i]], 
-                         lstats[[i]], 
+names <- c("AL_2.1.7", "AL_2.3.4", "GU_2.3.1", "GU_3.0.3")
+for (i in 1:length(names)){
+  assign(names[i], merge(get(paste(names[i],"_S",sep="")), 
+                         get(paste(names[i],"_M",sep="")), 
                          by = c("chr", "pos", "ref_nuc"), 
-                         sort = F))
-  datasets[[i]] <- get(n[[1]][i])}
+                         sort = F))}
 
+AL_2.1.7_plain <- AL_2.1.7
+AL_2.3.4_plain <- AL_2.3.4
+GU_2.3.1_plain <- GU_2.3.1
+GU_3.0.3_plain <- GU_3.0.3
 
 # We remove  positions with low coverage
+
+l <- list(AL_2.1.7, AL_2.3.4, GU_2.3.1, GU_3.0.3)
 remove_low_coverage <- function(i){
   cov <- mean(i$coverage) # We compute the coverage mean
-  threshold <- cov*threshold # We create a threshold for removing values lower than 10% of the computed mean
+  threshold <- cov*0.1 # We create a threshold for removing values lower than 10% of the computed mean
   i <- i[i$coverage>threshold,]
 }
 
-datasets <- lapply(datasets, remove_low_coverage)
+l <- lapply(l, remove_low_coverage)
 
 # We create a function for computing the total number of mismatches
 mismatches_function <- function(k){ 
   mismatches <- c()  
   for (i in c(1:nrow(k))){   
     base <- k[i,3]
-    a <- sum(k[i,4:7])-k[i,toString(base)]
+    a <- sum(k[i,10:13])-k[i,toString(base)]
     mismatches <- c(mismatches, a)
   }
   k <- cbind(k, mismatches)
 }
 
-datasets <- lapply(datasets, mismatches_function)
+l <- lapply(l, mismatches_function)
 
-datasets <- lapply(datasets, transform, mismatches_freq = mismatches/coverage)
+AL_2.1.7 <- l[[1]]
+AL_2.3.4 <- l[[2]]
+GU_2.3.1 <- l[[3]]
+GU_3.0.3 <- l[[4]]
 
+# We compute the mismatch frequency
+AL_2.1.7$mismatches_freq <- AL_2.1.7$mismatches/AL_2.1.7$coverage
+AL_2.3.4$mismatches_freq <- AL_2.3.4$mismatches/AL_2.3.4$coverage
+GU_2.3.1$mismatches_freq <- GU_2.3.1$mismatches/GU_2.3.1$coverage
+GU_3.0.3$mismatches_freq <- GU_3.0.3$mismatches/GU_3.0.3$coverage
 
-# We merge all the data
-data <- c()
-for (i in 1:length(n[[1]])){
-  assign(n[[1]][i], datasets[[i]])
-  data <- rbind(data, datasets[[i]])
-}
+# We add a variable to identify the base-caller
+AL_2.1.7$Basecaller <- "AL 2.1.7"
+AL_2.3.4$Basecaller <- "AL 2.3.4"
+GU_2.3.1$Basecaller <- "GU 2.3.1"
+GU_3.0.3$Basecaller <- "GU 3.0.3"
+
+# We merge the data from all the base-callers
+data <- rbind(AL_2.1.7, AL_2.3.4, GU_2.3.1, GU_3.0.3)
 
 
 ## Plotting
 
-#The first plot compares the global mismatch frequency per dataset/base-caller
-#colors=c("cyan3","cyan4", "red", "red3")
+#The first plot compares the global mismatch frequency per base-caller
+colors=c("cyan3","cyan4", "red", "red3")
 
-g <- ggplot(data, aes(dataset, log(mismatches_freq), color=dataset, fill=dataset)) + 
+g <- ggplot(data, aes(Basecaller, log(mismatches_freq), color=Basecaller, fill=Basecaller)) + 
   geom_violin(alpha = 0.3) +
   geom_boxplot(alpha = 0.4, width=0.2, show.legend = FALSE) +
- # scale_color_manual(values = colors) + 
-#  scale_fill_manual(values = colors) +
-  ylab("Mismatch Frequency (log)") + theme_bw() + ggtitle(paste("Mismatch Frequency per dataset:", title)) + 
+  scale_color_manual(values = colors) + 
+  scale_fill_manual(values = colors) +
+  ylab("Mismatch Frequency (log)") + theme_bw() + ggtitle(paste("Mismatch Frequency per Base-Caller:", name)) + 
   theme(plot.title = element_text(size = 10, face = "bold"))
 
 ggsave("mismatch_freq_per_basecaller.pdf", g, device = "pdf", path = dir, width = 4, height = 5)
 
 #The next set of plots evaluate the number of bases with mismatch frequency higher than a given threshold. First with the total number and then with the proportion
 plotting_threshold <- function(threshold){
-  ggplot(data[data$mismatches_freq>threshold,], aes(dataset, fill=ref_nuc)) + 
+  ggplot(data[data$mismatches_freq>threshold,], aes(Basecaller, fill=ref_nuc)) + 
     geom_bar()  + labs(fill = "Reference Nucleotide") + theme_bw() + ggtitle(paste("Threshold:", threshold*100, "%")) +
     geom_text(stat="count", aes(label=..count..), position = "stack", vjust=1.5, size=3.5) + 
-    #scale_x_discrete(labels= c("AL\n2.1.7","AL\n2.3.4","GU\n2.3.1","GU\n3.0.3")) +
-    theme(plot.title = element_text(hjust = 0.5)) + xlab("")
+    scale_x_discrete(labels= c("AL\n2.1.7","AL\n2.3.4","GU\n2.3.1","GU\n3.0.3")) +
+    theme(plot.title = element_text(hjust = 0.5))
 }
 
 plotting_threshold_proportion <- function(threshold){
-  ggplot(data[data$mismatches_freq>threshold,], aes(dataset, fill=ref_nuc)) + 
+  ggplot(data[data$mismatches_freq>threshold,], aes(Basecaller, fill=ref_nuc)) + 
     geom_bar(position = "fill")  + labs(fill = "Reference Nucleotide") + theme_bw() + ggtitle(paste("Threshold:", threshold*100, "%")) +
-    #scale_x_discrete(labels= c("AL\n2.1.7","AL\n2.3.4","GU\n2.3.1","GU\n3.0.3")) +
-    theme(plot.title = element_text(hjust = 0.5)) + xlab("")
+    scale_x_discrete(labels= c("AL\n2.1.7","AL\n2.3.4","GU\n2.3.1","GU\n3.0.3")) +
+    theme(plot.title = element_text(hjust = 0.5))
 }
 
 
@@ -175,7 +154,7 @@ g4 <- plotting_threshold(0.5)
 
 l <- list(g1, g2, g3, g4)
 figure <- ggarrange(plotlist=l, ncol=4, nrow=1, common.legend = TRUE, legend = "bottom") 
-f <- annotate_figure(figure, top = text_grob(paste("Number of Bases with Mismatch Frequency Higher than a Threhold:", title), face = "bold"))
+f <- annotate_figure(figure, top = text_grob(paste("Number of Bases with Mismatch Frequency Higher than a Threhold in", name), face = "bold"))
 
 ggsave("bases_above_threshold.pdf", f, device = "pdf", path = dir, width = 9, height = 7)
 
@@ -186,29 +165,30 @@ g4 <- plotting_threshold_proportion(0.5)
 
 l <- list(g1, g2, g3, g4)
 figure <- ggarrange(plotlist=l, ncol=4, nrow=1, common.legend = TRUE, legend = "bottom") 
-f <- annotate_figure(figure, top = text_grob(paste("Proportion of Bases with Mismatch Frequency Higher than a Threhold:", title), face = "bold"))
+f <- annotate_figure(figure, top = text_grob(paste("Proportion of Bases with Mismatch Frequency Higher than a Threhold in", name), face = "bold"))
 
 ggsave("bases_above_threshold_proportion.pdf", f, device = "pdf", path = dir, width = 9, height = 7)
 
 
 # These plots now compute the mismatch frequencies per nucleotide
 
-plotting_mismatch_frequencies <- function(i, n){
+plotting_mismatch_frequencies <- function(i){
   ggplot(data = i, mapping = aes(ref_nuc, log(mismatches_freq), color=ref_nuc, fill=ref_nuc)) +
     geom_violin(alpha = 0.3) +
     geom_boxplot(alpha = 0.5, show.legend = FALSE, width = 0.2) +
-    ggtitle(n) + ylab("Mismatch Frequency (log)") + xlab("Nucleotide") +
+    ggtitle(deparse(substitute(i))) + ylab("Mismatch Frequency (log)") + xlab("Nucleotide") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-l <- list()
-for (i in 1:length(n[[1]])){
-  l[[n[[1]][i]]] <- plotting_mismatch_frequencies(get(n[[1]][i]), n[[1]][i])
-}
+g1 <- plotting_mismatch_frequencies(AL_2.1.7)
+g2 <- plotting_mismatch_frequencies(AL_2.3.4)
+g3 <- plotting_mismatch_frequencies(GU_2.3.1)
+g4 <- plotting_mismatch_frequencies(GU_3.0.3)
 
-figure <- ggarrange(plotlist=l, ncol=length(n[[1]]), nrow=1, common.legend = TRUE, legend = "bottom") 
-f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide:", title), face = "bold"))
+l <- list(g1,g2,g3,g4)
+figure <- ggarrange(plotlist=l, ncol=4, nrow=1, common.legend = TRUE, legend = "bottom") 
+f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide in", name), face = "bold"))
 
 ggsave("mismatch_per_nucleotide.pdf", f, device = "pdf", path = dir, width = 9, height = 5)
 
@@ -218,39 +198,62 @@ A <- data[data$ref_nuc=="A",]
 C <- data[data$ref_nuc=="C",]
 G <- data[data$ref_nuc=="G",]
 T <- data[data$ref_nuc=="T",]
-
-m <- matrix(0,4, length(n[[1]]))
-for (i in 1:length(n[[1]])){
-  a <- log(A[A$dataset==n[[1]][i],]$mismatches_freq)
-  a <- a[a!=-Inf]
-  m[1,i]<- median(a)
-  c <- log(C[C$dataset==n[[1]][i],]$mismatches_freq)
-  c <- c[c!=-Inf]
-  m[2,i]<- median(c)
-  g <- log(G[G$dataset==n[[1]][i],]$mismatches_freq)
-  g <- g[g!=-Inf]
-  m[3,i]<- median(g)
-  t <- log(T[T$dataset==n[[1]][i],]$mismatches_freq)
-  t <- t[t!=-Inf]
-  m[4,i]<- median(t)
-}
-
-colnames(m) <- n[[1]]
-rownames(m) <- c("A","C","G","T")
+a <- log(A[A$Basecaller=="AL 2.1.7",]$mismatches_freq)
+a <- a[a!=-Inf]
+b <- log(C[C$Basecaller=="AL 2.1.7",]$mismatches_freq)
+b <- b[b!=-Inf]
+c <- log(G[G$Basecaller=="AL 2.1.7",]$mismatches_freq)
+c <- c[c!=-Inf]
+d <- log(T[T$Basecaller=="AL 2.1.7",]$mismatches_freq)
+d <- d[d!=-Inf]
+e <- log(A[A$Basecaller=="AL 2.3.4",]$mismatches_freq)
+e <- e[e!=-Inf]
+f <- log(C[C$Basecaller=="AL 2.3.4",]$mismatches_freq)
+f <- f[f!=-Inf]
+g <- log(G[G$Basecaller=="AL 2.3.4",]$mismatches_freq)
+g <- g[g!=-Inf]
+h <- log(T[T$Basecaller=="AL 2.3.4",]$mismatches_freq)
+h <- h[h!=-Inf]
+i <- log(A[A$Basecaller=="GU 2.3.1",]$mismatches_freq)
+i <- i[i!=-Inf]
+j <- log(C[C$Basecaller=="GU 2.3.1",]$mismatches_freq)
+j <- j[j!=-Inf]
+k <- log(G[G$Basecaller=="GU 2.3.1",]$mismatches_freq)
+k <- k[k!=-Inf]
+l <- log(T[T$Basecaller=="GU 2.3.1",]$mismatches_freq)
+l <- l[l!=-Inf]
+m <- log(A[A$Basecaller=="GU 3.0.3",]$mismatches_freq)
+m <- m[m!=-Inf]
+n <- log(C[C$Basecaller=="GU 3.0.3",]$mismatches_freq)
+n <- n[n!=-Inf]
+o <- log(G[G$Basecaller=="GU 3.0.3",]$mismatches_freq)
+a <- a[a!=-Inf]
+p <- log(T[T$Basecaller=="GU 3.0.3",]$mismatches_freq)
+o <- o[o!=-Inf]
+test <- matrix(c(median(a),median(b),
+                 median(c),median(d),
+                 median(e),median(f),
+                 median(g),median(h),
+                 median(i),median(j),
+                 median(k),median(l),
+                 median(m),median(n),
+                 median(o),median(p)), 4, 4)
+colnames(test) <- c("AL 2.1.7", "AL 2.3.4", "GU 2.3.1", "GU 3.0.3")
+rownames(test) <- c("A","C","G","T")
+g <-levelplot(test, xlab="", ylab="", margin=FALSE, 
+          col.regions = heat.colors(100)[1:length(heat.colors(90))], 
+          scales = list(tck = c(0,0)))
 
 pdf(paste(dir, "levelplot.pdf", sep="/"))
-levelplot(m, xlab="", ylab="", margin=FALSE, 
-          col.regions = heat.colors(100)[1:length(heat.colors(90))], 
-          scales = list(tck = c(0,0)), main="Levelplot of Mismatch Frequencies")
+print(g)
 dev.off()
 
 ##########
-# Now we compute the mismatch signature per dataset/base-caller using 5-mers centered on each nucleotide that doesn't contain mod in positions -2,-1,1,2. This is thought to be used in EpiNano outputs
+# Now we compute the mismatch signature per base-caller
 
 col <- list("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF")
 names(col) <- c("A", "C", "G", "T")
 
-if (epinano==TRUE){
 A <- c()
 for (i in 3:(nrow(data)-2)){
   if(data[i,]$ref_nuc=="A" && data[i-1,]$ref_nuc!=mod && data[i-2,]$ref_nuc!=mod && data[i+1,]$ref_nuc!=mod && data[i+2,]$ref_nuc!=mod){
@@ -267,41 +270,36 @@ T <- c()
 for (i in 3:(nrow(data)-2)){
   if(data[i,]$ref_nuc=="T" && data[i-1,]$ref_nuc!=mod && data[i-2,]$ref_nuc!=mod && data[i+1,]$ref_nuc!=mod && data[i+2,]$ref_nuc!=mod){
     T <- rbind(T, data[i,])}}
-} else {
-  A <- data[,ref_nuc=="A"]
-  C <- data[,ref_nuc=="C"]
-  G <- data[,ref_nuc=="G"]
-  T <- data[,ref_nuc=="T"]
-}
 
-mismatch_pattern <- function(input, number){
+
+mismatch_pattern <- function(input){
   
-  dat <- A[A$dataset==input,]
-  dat <- suppressMessages({melt(dat[,c("ref_nuc", "A", "T", "C", "G")])})
+  dat <- A[A$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
   dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[1,] 
   datA <- as.data.frame(cbind(c("A","A","A","A"), c("A","T","C","G"), dat))
   colnames(datA) <- c("ref_nuc", "variable","value")
   datA$variable <- factor(datA$variable, levels = as.character(datA[order(as.numeric(as.character(datA$value))),]$variable))
   datA$value <- as.numeric(as.character(datA$value))
   
-  dat <- C[C$dataset==input,]
-  dat <- suppressMessages({melt(dat[,c("ref_nuc", "A", "T", "C", "G")])})
+  dat <- C[C$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
   dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[2,]
   datC <- as.data.frame(cbind(c("C","C","C","C"), c("A","T","C","G"), dat))
   colnames(datC) <- c("ref_nuc", "variable","value")
   datC$variable <- factor(datC$variable, levels = as.character(datC[order(as.numeric(as.character(datC$value))),]$variable))
   datC$value <- as.numeric(as.character(datC$value))
   
-  dat <- G[G$dataset==input,]
-  dat <- suppressMessages({melt(dat[,c("ref_nuc", "A", "T", "C", "G")])})
+  dat <- G[G$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
   dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[3,]
   datG <- as.data.frame(cbind(c("G","G","G","G"), c("A","T","C","G"), dat))
   colnames(datG) <- c("ref_nuc", "variable","value")
   datG$variable <- factor(datG$variable, levels = as.character(datG[order(as.numeric(as.character(datG$value))),]$variable))
   datG$value <- as.numeric(as.character(datG$value))
   
-  dat <- T[T$dataset==input,]
-  dat <- suppressMessages({melt(dat[,c("ref_nuc", "A", "T", "C", "G")])})
+  dat <- T[T$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
   dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[4,]
   datT <- as.data.frame(cbind(c("T","T","T","T"), c("A","T","C","G"), dat))
   colnames(datT) <- c("ref_nuc", "variable","value")
@@ -323,32 +321,87 @@ mismatch_pattern <- function(input, number){
                       values = c(col[[first]], col[[second]], col[[third]], col[[fourth]]),
                       guide = guide_legend(reverse = TRUE)) +
     xlab("Reference Nucleotide") + ylab("count") +
-    coord_cartesian(ylim=c(number,1)) +
+    coord_cartesian(ylim=c(0.8,1)) +
     theme_bw() +
     ggtitle(input) +
     theme(plot.title = element_text(size = 12, hjust = 0.5), axis.text=element_text(size=6), axis.title=element_text(size=9))
 }
 
-l <- list()
-for (i in 1:length(n[[1]])){
-  l[[n[[1]][i]]] <- mismatch_pattern(n[[1]][i], zoom)
-}
+g1 <- mismatch_pattern("AL 2.1.7")
+g2 <- mismatch_pattern("AL 2.3.4")
+g3 <- mismatch_pattern("GU 2.3.1")
+g4 <- mismatch_pattern("GU 3.0.3")
 
-
-figure <- ggarrange(plotlist=l, ncol=length(n[[1]]), nrow=1, common.legend = TRUE, legend = "bottom") 
-f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide:", title), face = "bold"))
+l <- list(g1,g2,g3,g4)
+figure <- ggarrange(plotlist=l, ncol=4, nrow=1, common.legend = TRUE, legend = "bottom") 
+f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide in", name), face = "bold"))
 
 ggsave("mismatch_pattern_zoom.pdf", f, device = "pdf", path = dir, width = 8, height = 4)
 
 
-l <- list()
-for (i in 1:length(n[[1]])){
-  l[[n[[1]][i]]] <- mismatch_pattern(n[[1]][i], 0)
+
+mismatch_pattern_100 <- function(input){
+
+  dat <- A[A$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
+  dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[1,] 
+  datA <- as.data.frame(cbind(c("A","A","A","A"), c("A","T","C","G"), dat))
+  colnames(datA) <- c("ref_nuc", "variable","value")
+  datA$variable <- factor(datA$variable, levels = as.character(datA[order(as.numeric(as.character(datA$value))),]$variable))
+  datA$value <- as.numeric(as.character(datA$value))
+  
+  dat <- C[C$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
+  dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[2,]
+  datC <- as.data.frame(cbind(c("C","C","C","C"), c("A","T","C","G"), dat))
+  colnames(datC) <- c("ref_nuc", "variable","value")
+  datC$variable <- factor(datC$variable, levels = as.character(datC[order(as.numeric(as.character(datC$value))),]$variable))
+  datC$value <- as.numeric(as.character(datC$value))
+  
+  dat <- G[G$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
+  dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[3,]
+  datG <- as.data.frame(cbind(c("G","G","G","G"), c("A","T","C","G"), dat))
+  colnames(datG) <- c("ref_nuc", "variable","value")
+  datG$variable <- factor(datG$variable, levels = as.character(datG[order(as.numeric(as.character(datG$value))),]$variable))
+  datG$value <- as.numeric(as.character(datG$value))
+  
+  dat <- T[T$Basecaller==input,]
+  dat <- melt(dat[,c("ref_nuc", "A", "T", "C", "G")])
+  dat <- tapply(dat$value, list(dat$ref_nuc,dat$variable), sum)[4,]
+  datT <- as.data.frame(cbind(c("T","T","T","T"), c("A","T","C","G"), dat))
+  colnames(datT) <- c("ref_nuc", "variable","value")
+  datT$variable <- factor(datT$variable, levels = as.character(datT[order(as.numeric(as.character(datT$value))),]$variable))
+  datT$value <- as.numeric(as.character(datT$value))
+  
+  first <- as.character(datA[order(datA$value),]$variable)[1]
+  second <- as.character(datA[order(datA$value),]$variable)[2]
+  third <- as.character(datA[order(datA$value),]$variable)[3]
+  fourth <- as.character(datA[order(datA$value),]$variable)[4]
+  
+  ggplot() + 
+    geom_bar(data=datA, mapping=aes(ref_nuc, value, fill=variable), stat="identity", position="fill") +
+    geom_bar(data=datC, mapping=aes(ref_nuc, value, fill=variable), stat="identity", position="fill") +
+    geom_bar(data=datG, mapping=aes(ref_nuc, value, fill=variable), stat="identity", position="fill") +
+    geom_bar(data=datT, mapping=aes(ref_nuc, value, fill=variable), stat="identity", position="fill") +
+    scale_fill_manual("Base-called Nucleotide", 
+                      breaks = c(first, second, third, fourth),
+                      values = c(col[[first]], col[[second]], col[[third]], col[[fourth]]),
+                      guide = guide_legend(reverse = TRUE)) +
+    xlab("Reference Nucleotide") + ylab("count") +
+    theme_bw() +
+    ggtitle(input) +
+    theme(plot.title = element_text(size = 12, hjust = 0.5), axis.text=element_text(size=6), axis.title=element_text(size=9))
 }
 
+g1 <- mismatch_pattern_100("AL 2.1.7")
+g2 <- mismatch_pattern_100("AL 2.3.4")
+g3 <- mismatch_pattern_100("GU 2.3.1")
+g4 <- mismatch_pattern_100("GU 3.0.3")
 
-figure <- ggarrange(plotlist=l, ncol=length(n[[1]]), nrow=1, common.legend = TRUE, legend = "bottom") 
-f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide:", title), face = "bold"))
+l <- list(g1,g2,g3,g4)
+figure <- ggarrange(plotlist=l, ncol=4, nrow=1, common.legend = TRUE, legend = "bottom") 
+f <- annotate_figure(figure, top = text_grob(paste("Mismatch Frequency per Nucleotide in", name), face = "bold"))
 
 ggsave("mismatch_pattern_100.pdf", f, device = "pdf", path = dir, width = 8, height = 4)
 
@@ -356,7 +409,7 @@ ggsave("mismatch_pattern_100.pdf", f, device = "pdf", path = dir, width = 8, hei
 
   
 ternaries <- function(input){
-  datA <- A[A$dataset==input,]
+  datA <- A[A$Basecaller==input,]
 g1 <- ggtern(datA, aes(C,G,T)) +
   geom_point(size = 0.05, aes(color = log(coverage))) +
   ggtitle("Ternary Diagram for A") + theme_bw(base_size = 6) +
@@ -365,21 +418,21 @@ g1 <- ggtern(datA, aes(C,G,T)) +
 legend <- get_legend(g1)
 g1 <- g1 + theme(legend.position="none")
 
-datC <- C[C$dataset==input,]
+datC <- C[C$Basecaller==input,]
 g2 <- ggtern(datC, aes(A,G,T)) +
   geom_point(size = 0.05, aes(color = log(coverage))) +
   ggtitle("Ternary Diagram for C") + theme_bw(base_size = 6) +
   scale_color_continuous("Coverage (log)") +
   theme(legend.position="none", plot.title = element_text(size = 8, hjust = 0.5))
 
-datG <- G[G$dataset==input,]
+datG <- G[G$Basecaller==input,]
 g3 <- ggtern(datG, aes(A,C,T)) +
   geom_point(size = 0.05, aes(color = log(coverage))) +
   ggtitle("Ternary Diagram for G") + theme_bw(base_size = 6) +
   scale_color_continuous("Coverage (log)") +
   theme(legend.position="none", plot.title = element_text(size = 8, hjust = 0.5))
 
-datT <- T[T$dataset==input,]
+datT <- T[T$Basecaller==input,]
 g4 <- ggtern(datT, aes(A,C,G)) +
   geom_point(size = 0.05, aes(color = log(coverage))) +
   ggtitle("Ternary Diagram for T") + theme_bw(base_size = 6) +
@@ -390,6 +443,60 @@ g<- grid.arrange(g1,g2,g3,g4, nrow=1, ncol=5, legend, top=paste("Ternary Diagram
 ggsave(paste("ternary_diagram_", input, ".pdf", sep=""), g, device = "pdf", path = dir, width = 7, height = 3)
 }
 
-for (i in n[[1]]){
-  ternaries(i)
-}
+ternaries("AL 2.1.7")
+ternaries("AL 2.3.4")
+ternaries("GU 2.3.1")
+ternaries("GU 3.0.3")
+  
+
+#Output files with proportion of each base in the kmers
+
+csv_function <- function(dataset, basecaller){
+  dataset$total <- dataset$A + dataset$T + dataset$C + dataset$G
+  dataset$A <- dataset$A / dataset$total
+  dataset$C <- dataset$C / dataset$total
+  dataset$G <- dataset$G / dataset$total
+  dataset$T <- dataset$T / dataset$total
+
+  dataset$chr <- as.character(dataset$chr)
+  m <- data.frame(row.names = c("#Kmer", "Window", "Ref", "Coverage", "A1", "C1", "G1", "T1", "A2", "C2", "G2", "T2", "A3", "C3", "G3", "T3", "A4", "C4", "G4", "T4", "A5", "C5", "G5", "T5"))
+  m <- t(m)
+  for(i in 1:nrow(dataset)){
+    try({if(dataset[i+4,]$pos - dataset[i,]$pos == 4){
+    kmer <- paste(dataset[i,]$ref_nuc, dataset[i+1,]$ref_nuc, dataset[i+2,]$ref_nuc, dataset[i+3,]$ref_nuc, dataset[i+4,]$ref_nuc, sep="")
+     window <- paste(dataset[i,]$pos, dataset[i+1,]$pos, dataset[i+2,]$pos, dataset[i+3,]$pos, dataset[i+4,]$pos, sep=":")
+     coverage <- paste(dataset[i,]$coverage, dataset[i+1,]$coverage, dataset[i+2,]$coverage, dataset[i+3,]$coverage, dataset[i+4,]$coverage, sep=":")
+     a1 <- dataset[i,]$A
+     a2 <- dataset[i+1,]$A
+     a3 <- dataset[i+2,]$A
+     a4 <- dataset[i+3,]$A
+     a5 <- dataset[i+4,]$A
+     c1 <- dataset[i,]$C
+     c2 <- dataset[i+1,]$C
+     c3 <- dataset[i+2,]$C
+     c4 <- dataset[i+3,]$C
+     c5 <- dataset[i+4,]$C
+     g1 <- dataset[i,]$G
+     g2 <- dataset[i+1,]$G
+     g3 <- dataset[i+2,]$G
+     g4 <- dataset[i+3,]$G
+     g5 <- dataset[i+4,]$G
+     t1 <- dataset[i,]$T
+     t2 <- dataset[i+1,]$T
+     t3 <- dataset[i+2,]$T
+     t4 <- dataset[i+3,]$T
+     t5 <- dataset[i+4,]$T
+     m <- rbind(m, c(kmer, window, dataset[i,]$chr, coverage, a1, c1, g1, t1, a2, c2, g2, t2, a3, c3, g3, t3, a4, c4, g4, t4, a5, c5, g5, t5))
+    }
+    else{#print(paste(dataset[i+4,]$chr, dataset[i,]$chr))
+      }}, silent=TRUE)
+  } # Now, we write the table into a .csv file
+  write.csv(m, file = paste(dir, "/base_proportions_", basecaller, ".csv", sep=""), quote = FALSE, row.names = FALSE)
+} # End of function
+
+csv_function(AL_2.1.7_plain, "AL_2.1.7")
+csv_function(AL_2.3.4_plain, "AL_2.3.4")
+csv_function(GU_2.3.1_plain, "GU_2.3.1")
+csv_function(GU_3.0.3_plain, "GU_3.0.3")
+
+
