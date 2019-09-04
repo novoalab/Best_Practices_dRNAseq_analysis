@@ -125,6 +125,12 @@ We use epinano to get per_site information, it produces as output a per_site.var
 
 ### Step 6: PolyA length estimation
 
+Pre-processing
+```
+samtools view -bF 260 ${prebam} > ${bam} #to keep only mapped reads and remove secondary alignments
+bedtools intersect -a ${bed} -b ${bam} -wb | cut -f 9,5 | awk '{print $2 " " $1}' | tr ' ' ',' > intersect.bed
+```
+
 * Nanopolish: 
 ```
 nanopolish index -d ${RAW_fast5} ${fastq}  #optional -s for sequencing summary or -f if list of many sequencing summaries
@@ -133,7 +139,13 @@ nanopolish polya -t ${threads} -r ${fastq} -b ${bam} -g ${ref} > ${nanopolish_ou
 
 * Tailfindr:
 ```
-Rscript scripts/tailfindr_polya.R -i ${base-called_fast5s} -o ${output_dir} -n ${output_name}
+Rscript scripts/tailfindr_polya.R -i ${base-called_fast5s} -o ${output_dir} -n ${tailfindr_output_name}
+```
+
+Post-processing
+
+```
+./post_polya.sh ${tailfindr_output_name}.tsv ${nanopolish_output} ${intersect.bed} ${tailfindr_output_gene_names} ${nanopolish_output_gene_names}
 ```
 
 ## Citation
