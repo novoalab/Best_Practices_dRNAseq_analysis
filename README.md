@@ -6,7 +6,7 @@ This repository contains scripts to analyze the output of base-called direct RNA
 - 3) RNA modification analyses
 - 4) PolyA tail estimations
 
-The analysis can be ran for a single fastq file, of in a comparative mode (e.g. comparison of different base-callers, comparison of different mappers, etc)
+The analysis is thought as a comparison (e.g. comparison of different base-callers, comparison of different mappers, etc)
 
 ## Pre-requisites
 
@@ -90,13 +90,9 @@ done
 
 ### Step 4: Analysis of mapping
 
-* Single sorted.bam file
-```
-```
-
 * Comparison of sorted.bam files
 ```
-./mapping_analysis_comparison.sh -i ${DIRECTORY_WITH_SORTED.BAM_FILES} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
+./mapping_analysis_comparison.sh -i ${DIRECTORY_WITH_SORTED.BAM_FILES} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS} #It outputs one .csv file per base-caller
 #example 1: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2"
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 
@@ -112,10 +108,6 @@ Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The inpu
 
 * EpiNano: https://github.com/enovoa/EpiNano  
 We use epinano to get per_site information, it produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file
-
-* Single .csv file
-```
-```
 
 * Comparison between two .csv files (By now, it only accepts two, either unm vs mod or replicates)
 ```
