@@ -35,9 +35,7 @@ options=parse_args(parser)
 dir=options$input
 name=options$name
 mod=options$mod
-dir="/home/pepe/Documentos/Uni/Internship/Project/Files/Mismatch/graphmap/m6A/"
-name="m6A"
-mod="A"
+
 # In the input directory there should be a file ending in .mismatches and another one ending in .STATS per base-caller.
 AL_2.1.7_S <- list.files(path=dir, pattern = "*albacore_2.1.7.*STATS")
 AL_2.1.7_M <- list.files(path=dir, pattern = "albacore_2.1.7.*mismatches")
