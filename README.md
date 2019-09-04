@@ -123,6 +123,19 @@ We use epinano to get per_site information, it produces as output a per_site.var
 #example 1: pipeline/modification_analysis_comparison.sh -b "A" -u example_data/unm_per_site.var.csv.slided.onekmer.oneline.5mer.csv -m example_data/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.csv -o output/ -e false -n "UNM,m6A"
 ```
 
+### Step 6: PolyA length estimation
+
+* Nanopolish: 
+```
+nanopolish index -d ${RAW_fast5} ${fastq}  #optional -s for sequencing summary or -f if list of many sequencing summaries
+nanopolish polya -t ${threads} -r ${fastq} -b ${bam} -g ${ref} > ${nanopolish_output}
+```
+
+* Tailfindr:
+```
+Rscript scripts/tailfindr_polya.R -i ${base-called_fast5s} -o ${output_dir} -n ${output_name}
+```
+
 ## Citation
 
 We are currently preparing a draft for bioRxiv. 
