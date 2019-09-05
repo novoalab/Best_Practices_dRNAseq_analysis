@@ -1,4 +1,6 @@
-*** Pipeline for parallel execution:
+### Pipeline for parallel execution:
+
+By now, it is thought to be executed in ant-cluster (CRG cluster)
 
 ```
 mkdir ${OUTPUT}
