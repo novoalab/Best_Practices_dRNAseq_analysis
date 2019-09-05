@@ -12,7 +12,7 @@ echo $num reads were sequenced
 
 ###Number of base-called reads
 
-for d in ${INPUT}/*/; do 
+for d in ${INPUT}/ALBACORE_2.1.7_OUTPUT ${INPUT}/ALBACORE_2.3.4_OUTPUT ${INPUT}/GUPPY_2.3.1_OUTPUT ${INPUT}/GUPPY_3.0.3_OUTPUT; do
 fastq_file=${d}/fastq/RNA*
 gzip -d $fastq_file
 awk '{if(NR%4==1) print $1}' ${fastq_file%.gz} | sed -e "s/^@//" > ${d}/fastq/basecalled_nonsorted_reads
@@ -27,19 +27,19 @@ done
 ### Common reads
 
 #Changing location and name
-for d in ${INPUT}/*/; do 
+for d in ALBACORE_2.1.7_OUTPUT ALBACORE_2.3.4_OUTPUT GUPPY_2.3.1_OUTPUT GUPPY_3.0.3_OUTPUT; do
 mkdir -p $INPUT/COMPARISONS
-file=${d}/fastq/basecalled_reads
-if [[ $d == *ALBACORE_2.1.7_OUTPUT/ ]]
+file=${INPUT}/${d}/fastq/basecalled_reads
+if [[ $d == ALBACORE_2.1.7_OUTPUT/ ]]
 then
 mv $file $INPUT/COMPARISONS/ALBACORE_O
-elif [[ $d == *ALBACORE_2.3.4_OUTPUT/ ]]
+elif [[ $d == ALBACORE_2.3.4_OUTPUT/ ]]
 then
 mv $file $INPUT/COMPARISONS/ALBACORE_N
-elif [[ $d == *GUPPY_2.3.1_OUTPUT/ ]]
+elif [[ $d == GUPPY_2.3.1_OUTPUT/ ]]
 then
 mv $file $INPUT/COMPARISONS/GUPPY_O
-elif [[ $d == *GUPPY_3.0.3_OUTPUT/ ]]
+elif [[ $d == GUPPY_3.0.3_OUTPUT/ ]]
 then
 mv $file $INPUT/COMPARISONS/GUPPY_N
 else
@@ -56,9 +56,30 @@ comm -12 $C/GUPPY_N $C/GUPPY_O > $C/GUPPY_COMMON
 comm -13 $C/GUPPY_N $C/GUPPY_O > $C/GUPPY_O_ONLY
 comm -23 $C/GUPPY_N $C/GUPPY_O > $C/GUPPY_N_ONLY
 
+
+cd $C
+touch basecalled_information.txt
+a=$( cat $C/ALBACORE_COMMON | wc -l )
+echo Both versions of Albacore base-called $a reads in common >> basecalled_information.txt
+echo Both versions of Albacore base-called $a reads in common
+a=$( cat $C/ALBACORE_O_ONLY | wc -l )
+echo Albacore 2.1.7 uniquely base-called $a reads >> basecalled_information.txt
+echo Albacore 2.1.7 uniquely base-called $a reads
+a=$( cat $C/ALBACORE_N_ONLY | wc -l )
+echo Albacore 2.3.4 uniquely base-called $a reads >> basecalled_information.txt
+echo Albacore 2.3.4 uniquely base-called $a reads
+
+a=$( cat $C/GUPPY_COMMON | wc -l )
+echo Both versions of Guppy base-called $a reads in common >> basecalled_information.txt
+echo Both versions of Guppy base-called $a reads in common
+a=$( cat $C/GUPPY_O_ONLY | wc -l )
+echo Guppy 2.3.4 uniquely base-called $a reads >> basecalled_information.txt
+echo Guppy 2.3.4 uniquely base-called $a reads
+a=$( cat $C/GUPPY_N_ONLY | wc -l )
+echo Guppy 3.0.3 uniquely base-called $a reads >> basecalled_information.txt
+echo Guppy 3.0.3 uniquely base-called $a reads
+
 for i in $C/ALBACORE_COMMON $C/ALBACORE_O_ONLY $C/ALBACORE_N_ONLY $C/GUPPY_COMMON $C/GUPPY_O_ONLY $C/GUPPY_N_ONLY; do
-echo $i
-wc -l $i
 rm $i
 done
 
@@ -82,9 +103,6 @@ AL_O=$INPUT/ALBACORE_2.1.7_OUTPUT/fastq/RNA*
 AL_N=$INPUT/ALBACORE_2.3.4_OUTPUT/fastq/RNA*
 GU_O=$INPUT/GUPPY_2.3.1_OUTPUT/fastq/RNA*
 GU_N=$INPUT/GUPPY_3.0.3_OUTPUT/fastq/RNA*
-for i in $AL_O $AL_N $GU_O $GU_N; do
-
-done
 
 qsub -cwd -N read -V -t 1-${NUMFILES} -o $C/logs/qout/ -e $C/logs/qerr/ /users/enovoa/joramirez/scripts/computation_parallel.sh $AL_O $AL_N $GU_O $GU_N $C/ $C/OUTPUT
 
@@ -118,7 +136,7 @@ done
 
 ###Number of mapped reads
 
-for d in ${INPUT}/*/; do 
+for d in ${INPUT}/ALBACORE_2.1.7_OUTPUT ${INPUT}/ALBACORE_2.3.4_OUTPUT ${INPUT}/GUPPY_2.3.1_OUTPUT ${INPUT}/GUPPY_3.0.3_OUTPUT; do
 for i in $d/bam/*.sorted.bam; do
 echo $i
 samtools flagstat $i; done; done
@@ -135,17 +153,6 @@ done
 /users/enovoa/joramirez/scripts/from_bam_to_stats.sh
 done
 
-
-
-#for d in ${INPUT}/ALBACORE_2.1.7_OUTPUT ${INPUT}/ALBACORE_2.3.4_OUTPUT ${INPUT}/GUPPY_2.3.1_OUTPUT ${INPUT}/GUPPY_3.0.3_OUTPUT; do 
-#for i in minimap2_sensitive minimap2_default graphmap_sensitive graphmap_default; do
-#NanoPlot --bam $d/bam/*${i}.sorted.bam -o $d/bam/NanoPlot/ -p ${i}
-#done; done
-
-
-
-
-#Improve for loops now.
 
 
 
