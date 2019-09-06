@@ -49,3 +49,4 @@ exit
 
 #Next step is traingin the SVM, coming soon :)
 ```
+Now, we can run STEPS 2, 4 and 5 from README.md
