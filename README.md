@@ -95,7 +95,10 @@ done
 ./mapping_analysis_comparison.sh -i ${DIRECTORY_WITH_SORTED.BAM_FILES} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS} #It outputs one .csv file per base-caller
 #example 1: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2"
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
+```
+If -m ${base} option is included, filtered .csv files will be created containing the mismatch information for the 5mers that only contain that given base in the central position
 
+```
 #For comparing modifications with ternary plots:
 Rscript scripts/ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
 
