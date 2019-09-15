@@ -97,6 +97,7 @@ done
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
 If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain that given base in the central position.
+If -z ${zoom} option is present, an extra plot will be created for the mismatch signature with this value as lower boundary for the y axis.
 
 ```
 #For comparing modifications with ternary plots:
