@@ -64,10 +64,12 @@ done
 
 if [ $title_log = true ] && [ $mod_log = true ]; then
 Rscript scripts/mismatch.R -i $OUTPUT_DIR -n $names -e -m $mod -t $title -k $threshold -z $zoom
+for i in base_proportion*; do head -1 $i > ${i%.*}.filtered.csv; awk -F"," "\$1 ~ /[^/$mod/][^/$mod/][/$mod/][^/$mod/][^/$mod/]/" $i >> ${i%.*}.filtered.csv; done;
 elif [ $title_log = true ]; then
 Rscript scripts/mismatch.R -i $OUTPUT_DIR -n $names -e -t $title -k $threshold -z $zoom
 elif [ $mod_log = true ]; then
 Rscript scripts/mismatch.R -i $OUTPUT_DIR -n $names -e -m $mod -k $threshold -z $zoom;
+for i in base_proportion*; do head -1 $i > ${i%.*}.filtered.csv; awk -F"," "\$1 ~ /[^/$mod/][^/$mod/][/$mod/][^/$mod/][^/$mod/]/" $i >> ${i%.*}.filtered.csv; done;
 else
 Rscript scripts/mismatch.R -i $OUTPUT_DIR -n $names -e -k $threshold -z $zoom;
 fi
