@@ -73,7 +73,4 @@ Rscript scripts/mismatch.R -i $OUTPUT_DIR -n $names -e -k $threshold -z $zoom;
 fi
 
 
-#maybe accept sam and do the post-processing here, and also accept bam and do the sorting and indexing here.
-#Use names for the first part too maybe
-
 
