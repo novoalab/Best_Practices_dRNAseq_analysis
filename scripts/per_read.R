@@ -29,7 +29,7 @@ parser <- add_option(parser, opt_str=c("-t", "--title"), type="character",
                      dest='title',
                      help="Title")
 parser <- add_option(parser, opt_str=c("-n", "--names"), type="character",
-                     default = "1 2",
+                     default = "1,2,3,4",
                      dest='names',
                      help="Names of the datasets")
 options=parse_args(parser)
