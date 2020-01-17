@@ -139,9 +139,14 @@ Rscript scripts/tailfindr_polya.R -i ${base-called_fast5s} -o ${output_dir} -n $
 ```
 
 Post-processing
-
 ```
 ./post_polya.sh ${tailfindr_output_name}.tsv ${nanopolish_output} ${intersect.bed} ${tailfindr_output_gene_names} ${nanopolish_output_gene_names}
+```
+* Analysis
+In the next script we compare both tools using three replicates of S. cerevisiae WT and
+three of ime4∆ as input data. We also look for differentially expressed gene (WT vs KO) containg kown m6A modifications (info in sites.bed). We will be updating this script for more general cases.
+```
+Rscript polyA_guppy.R sites.bed ${tailfindr_DIR} ${nanopolish_DIR}
 ```
 
 ## Citation
