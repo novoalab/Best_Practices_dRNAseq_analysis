@@ -106,14 +106,14 @@ This script will automatically return boxplots about the mismatch frequencies pe
 Rscript scripts/mismatch.R -i ${INPUT_DIR} -e -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
 #Where ${INPUT_DIR} contains .STATS and .mimatch files (output from ./mapping_analysis_comparison.sh) and ${NAMES} would contain the base-caller names separeted by commas
 optional arguments:
-	-m
+	-m ${BASE}, --modification ${BASE}
 		modified base [A, C, G, T] for considering 5-mers with m in its central position and allowing the computation of the mismatch pattern and the ternary diagrams.
-	-t
+	-t ${TITLE}, --title ${TITLE}
 		optional plot title
-	-k
+	-k ${THRESHOLD}, --threshold ${THRESHOLD}
 		threshold for removing positions with lower coverage than this percentage. Default = 0.1
-	-z
-		zoom for plotting the mismatch pattern. Default = 0.8
+	-z ${ZOOM}, --zoom ${ZOOM}
+		lower bound in the y-axis for the mismatch pattern plot. Default = 0.8
 #example 1: Rscript mismatch.R -i ~/{example_data} -n "AL_2.1.7,GU_3.0.3" -m C -e 
 
 ```
@@ -132,12 +132,20 @@ Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The inpu
 ### Step 5: RNA modification analysis
 
 * EpiNano: https://github.com/enovoa/EpiNano  
-We use epinano to get per_site information, it produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file
+We use epinano to build the feature table and get per_site information, it produces as output a per_site.var.csv.slided.onekmer.oneline.5mer.csv file
 
-* Comparison between two .csv files (By now, it only accepts two, either unm vs mod or replicates)
+* Comparison of the two .csv files (either unm vs mod or replicates comparison) and building of an epinano model (for curlcakes).
 ```
 ./modification_analysis_comparison.sh -b ${MODIFIED_BASE} -u ${UNMODIFIED_CSV_FILE} -m ${MODIFIED_CSV_FILE} -e ${BOOLEAN_FOR_BUILDING_MODEL} -n ${DATASET_NAMES}
 #example 1: ./modification_analysis_comparison.sh -b "A" -u example_data/unm_per_site.var.csv.slided.onekmer.oneline.5mer.csv -m example_data/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.csv -o output/ -e false -n "UNM,m6A"
+If something different than curlcakes are used for training, use flag -e false and check https://github.com/enovoa/EpiNano
+```
+This will output boxplots per 5-mer position comparing the modified data against the non-modified data.
+
+* PCA
+```
+Rscript scripts/PCA.R -u ${UNMODIFIED.csv} -m ${MODIFIED.csv} -n ${NAMES} -c ${COLUMNS} -s
+#Where s is a recommended flag for triggering scaled PCA instead of just centered PCA
 ```
 
 ### Step 6: PolyA length estimation
