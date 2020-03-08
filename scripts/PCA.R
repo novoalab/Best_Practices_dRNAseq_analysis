@@ -25,17 +25,11 @@ scaling=options$scaling
 names=options$names
 columns=options$columns
 
-# unmodified <- "GU_3.0.3_graphmap/replicate1/UNM_A_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv"
-# modified <- "GU_3.0.3_graphmap/replicate1/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv"
-# names <- "unm,m6A"
-# columns <- "5,6,7,8,9,10,11,12,13,14,20,21,22,23,24"
-# scaling=TRUE
-
 n <- strsplit(names, ",")[[1]]
 c <- as.numeric(strsplit(columns, ",")[[1]])
 
-unmodified <- read.delim("GU_3.0.3_graphmap/replicate1/UNM_A_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv", sep = ",")
-modified <- read.delim("GU_3.0.3_graphmap/replicate1/m6A_per_site.var.csv.slided.onekmer.oneline.5mer.filtered.csv", sep = ",")
+unmodified <- read.delim(unmodified, sep = ",")
+modified <- read.delim(modified, sep = ",")
 
 unmodified$modification <- "UNM"
 modified$modification <- "MOD"
