@@ -92,11 +92,31 @@ done
 
 * Comparison of sorted.bam files
 ```
-./mapping_analysis_comparison.sh -i ${DIRECTORY_WITH_SORTED.BAM_FILES} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS} #It outputs one .csv file per base-caller
+./mapping_analysis_comparison.sh -i ${INPUT_DIR} -o ${OUTPUT_DIR} -r ${REFERENCE_FASTA} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS} #Where input directory contains the sorted.bam files. It outputs one .csv file per base-caller
 #example 1: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2"
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
 If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain that given base in the central position.
+This will automatically return boxplots per base-caller, barplots per bases, boxplots per bases containing mismatch information, and some default ternary plots by base-caller. If further tune of parameters is desired, the newxt command line can be executed:
+
+```
+Rscript scripts/mismatch.R -i ${INPUT_DIR} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
+#Where ${INPUT_DIR} contains .STATS and .mimatch files (output from previous step) and ${NAMES} would contain the base-caller names separeted by commas
+optional arguments:
+	-m
+		base [A, C, G, T] used as modified for considering 5-mers with m as central position and computing the mismatch pattern and the ternary diagrams.
+	-t
+		optional plot title
+	-k
+		threshold for removing positions with lower coverage than this percentage. Default = 0.1
+	-z
+		zoom for plotting the mismatch pattern. Default = 0.8
+	-e
+		BOOLEAN for studying the epinano output
+#example 1: Rscript mismatch.R -i ~/{example_data} -n "AL_2.1.7,AL_2.3.4,GU_2.3.1,GU_3.0.3" -m A -e 
+
+```
+
 If -z ${zoom} option is present, an extra plot will be created for the mismatch signature with this value as lower boundary for the y axis.
 
 ```
