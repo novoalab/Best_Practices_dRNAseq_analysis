@@ -48,7 +48,7 @@ This script outputs the number of base-called reads from a given fastq.gz files
 ./basecalling_analysis_comparison.sh ${OUTPUT_DIRECTORY} ${ALL_FASTQ_FILES} ${ALL_FASTQ_NAMES_FOR_PLOTTING}
 #example: ./basecalling_analysis_comparison.sh output/ example_data/test_1.fastq example_data/test_1.fastq dataset_1 dataset_2
 ```
-This script outputs the number of base-called reads from every fastq.gz file, the number of common reads between every pair of files and it also outputs boxplots per base-caller using first read lengths and then base-calling qualities as y-axis.
+This script outputs the number of base-called reads from every fastq.gz file, the number of common reads between every pair of files, and it also outputs boxplots per base-caller using first read lengths and then base-calling qualities as the y-axis.
 
 ### Step 3: Mapping
 
