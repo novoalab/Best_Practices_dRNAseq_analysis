@@ -100,7 +100,7 @@ If -m ${base} option is included, extra filtered .csv files will be created cont
 This will automatically return boxplots per base-caller, barplots per bases, boxplots per bases containing mismatch information, and some default ternary plots by base-caller. If further tune of parameters is desired, the newxt command line can be executed:
 
 ```
-Rscript scripts/mismatch.R -i ${INPUT_DIR} -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
+Rscript scripts/mismatch.R -i ${INPUT_DIR} -e -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
 #Where ${INPUT_DIR} contains .STATS and .mimatch files (output from previous step) and ${NAMES} would contain the base-caller names separeted by commas
 optional arguments:
 	-m
@@ -111,9 +111,7 @@ optional arguments:
 		threshold for removing positions with lower coverage than this percentage. Default = 0.1
 	-z
 		zoom for plotting the mismatch pattern. Default = 0.8
-	-e
-		BOOLEAN for studying the epinano output
-#example 1: Rscript mismatch.R -i ~/{example_data} -n "AL_2.1.7,AL_2.3.4,GU_2.3.1,GU_3.0.3" -m A -e 
+#example 1: Rscript mismatch.R -i ~/{example_data} -n "AL_2.1.7,GU_3.0.3" -m C -e 
 
 ```
 
