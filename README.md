@@ -145,7 +145,11 @@ This will output boxplots per 5-mer position comparing the modified data against
 * PCA
 ```
 Rscript scripts/PCA.R -u ${UNMODIFIED.csv} -m ${MODIFIED.csv} -n ${NAMES} -c ${COLUMNS} -s
-#Where s is a recommended flag for triggering scaled PCA instead of just centered PCA
+
+Where ${NAMES} are comma separated names for the datasets
+${COLUMNS} are comma seperated column numbers used for the PCA
+and s is a recommended flag for triggering scaled PCA instead of just centered PCA,
+
 ```
 
 ### Step 6: PolyA length estimation
