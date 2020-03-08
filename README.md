@@ -100,7 +100,7 @@ done
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
 If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain the given base in its central position.
-This script will automatically return boxplots about the mismatch frequencies per base-caller and per bases, levelplots, and ternary plots by base-caller. 
+This script will automatically return levelplots by base-caller, boxplots for the mismatch frequencies per base-caller and per bases, and ternary plots by base-caller. 
 
 If further tune of parameters is desired, the next command line can be executed:
 
