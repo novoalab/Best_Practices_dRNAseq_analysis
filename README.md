@@ -99,15 +99,15 @@ done
 #example 1: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2"
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
-If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain that given base in the central position.
-This will automatically return boxplots per base-caller, barplots per bases, boxplots per bases containing mismatch information, and some default ternary plots by base-caller. If further tune of parameters is desired, the next command line can be executed:
+If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain the given base in its central position.
+This script will automatically return boxplots about the mismatch frequencies per base-caller and per bases, levelplots, and ternary plots by base-caller. If further tune of parameters is desired, the next command line can be executed:
 
 ```
 Rscript scripts/mismatch.R -i ${INPUT_DIR} -e -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
 #Where ${INPUT_DIR} contains .STATS and .mimatch files (output from ./mapping_analysis_comparison.sh) and ${NAMES} would contain the base-caller names separeted by commas
 optional arguments:
 	-m
-		base [A, C, G, T] used as modified for considering 5-mers with m as central position and computing the mismatch pattern and the ternary diagrams.
+		modified base [A, C, G, T] for considering 5-mers with m in its central position and allowing the computation of the mismatch pattern and the ternary diagrams.
 	-t
 		optional plot title
 	-k
@@ -121,11 +121,11 @@ optional arguments:
 If -z ${zoom} option is present, an extra plot will be created for the mismatch signature with this value as lower boundary for the y axis.
 
 ```
-#For comparing modifications with ternary plots:
-Rscript scripts/ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
+#For comparing different modifications with ternary plots:
+Rscript scripts/ternary.R -m ${mapper} -b ${basecaller}
 
 #For checking replicability in two datasets:
-Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The input directory contains the output of ./mapping_analysis_comparison (.mismatches and .STATS output)
+Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The input directory should contain the output of ./mapping_analysis_comparison (.mismatches and .STATS output)
 
 ```
 
