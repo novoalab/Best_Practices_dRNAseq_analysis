@@ -97,11 +97,11 @@ done
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
 If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain that given base in the central position.
-This will automatically return boxplots per base-caller, barplots per bases, boxplots per bases containing mismatch information, and some default ternary plots by base-caller. If further tune of parameters is desired, the newxt command line can be executed:
+This will automatically return boxplots per base-caller, barplots per bases, boxplots per bases containing mismatch information, and some default ternary plots by base-caller. If further tune of parameters is desired, the next command line can be executed:
 
 ```
 Rscript scripts/mismatch.R -i ${INPUT_DIR} -e -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
-#Where ${INPUT_DIR} contains .STATS and .mimatch files (output from previous step) and ${NAMES} would contain the base-caller names separeted by commas
+#Where ${INPUT_DIR} contains .STATS and .mimatch files (output from ./mapping_analysis_comparison.sh) and ${NAMES} would contain the base-caller names separeted by commas
 optional arguments:
 	-m
 		base [A, C, G, T] used as modified for considering 5-mers with m as central position and computing the mismatch pattern and the ternary diagrams.
