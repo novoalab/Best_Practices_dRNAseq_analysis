@@ -100,11 +100,13 @@ done
 #example 2: ./mapping_analysis_comparison.sh -i example_data/ -o output/ -r example_data/reference.fasta -n "graphmap,minimap2" -m "A" -t "my_title" -k 0.1 -z 0.8
 ```
 If -m ${base} option is included, extra filtered .csv files will be created containing the mismatch information for the 5-mers that only contain the given base in its central position.
-This script will automatically return boxplots about the mismatch frequencies per base-caller and per bases, levelplots, and ternary plots by base-caller. If further tune of parameters is desired, the next command line can be executed:
+This script will automatically return boxplots about the mismatch frequencies per base-caller and per bases, levelplots, and ternary plots by base-caller. 
+
+If further tune of parameters is desired, the next command line can be executed:
 
 ```
 Rscript scripts/mismatch.R -i ${INPUT_DIR} -e -n ${NAMES} ${MORE_OPTIONAL_PARAMETERS}
-#Where ${INPUT_DIR} contains .STATS and .mimatch files (output from ./mapping_analysis_comparison.sh) and ${NAMES} would contain the base-caller names separeted by commas
+#Where ${INPUT_DIR} contains .STATS and .mismatch files (output from ./mapping_analysis_comparison.sh) and ${NAMES} would contain the base-caller names separeted by commas
 optional arguments:
 	-m ${BASE}, --modification ${BASE}
 		modified base [A, C, G, T] for considering 5-mers with m in its central position and allowing the computation of the mismatch pattern and the ternary diagrams.
@@ -113,18 +115,26 @@ optional arguments:
 	-k ${THRESHOLD}, --threshold ${THRESHOLD}
 		threshold for removing positions with lower coverage than this percentage. Default = 0.1
 	-z ${ZOOM}, --zoom ${ZOOM}
-		lower bound in the y-axis for the mismatch pattern plot. Default = 0.8
+		lower bound in the y-axis for the zoomed mismatch pattern plot. Default = 0.8
 #example 1: Rscript mismatch.R -i ~/{example_data} -n "AL_2.1.7,GU_3.0.3" -m C -e 
 
 ```
 
-If -z ${zoom} option is present, an extra plot will be created for the mismatch signature with this value as lower boundary for the y axis.
-
+If ./mapping_analysis_comparison.sh is executed for different modifications, the levelplots will be in diferent scales and not easily comparable. We can store each modification output in one different directory for executing the next command line to output one levelplot with the information from all the modifications:
 ```
-#For comparing different modifications with ternary plots:
-Rscript scripts/ternary.R -m ${mapper} -b ${basecaller}
+Rscript scripts/levelplots.R -i ${DIRS} -n ${NAMES} -d ${DATASET_NAMES}
+#Where ${DIRS} is a comma separated string with all the directories (one per dataset), ${NAMES} is a comma separated string with the four base-caller names and ${DATASET_NAMES} a comma separated string with the dataset names.
+
+"minimap2/m6A/,minimap2/m5C/" -n "A,B,C,D" -d "1,2"
+```
+
+For comparing different modifications with ternary plots:
+```
+Rscript scripts/ternary.R -m ${mapper} -b ${basecaller} #It still needs improvement
+```
 
 #For checking replicability in two datasets:
+```
 Rscript scripts/replicability -i ${INPUT_OUTPUT_DIRECTORY} -n ${NAMES} #The input directory should contain the output of ./mapping_analysis_comparison (.mismatches and .STATS output)
 
 ```
