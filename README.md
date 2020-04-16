@@ -154,11 +154,10 @@ This will output boxplots per 5-mer position comparing the modified data against
 
 * PCA
 ```
-Rscript scripts/PCA.R -u ${UNMODIFIED.csv} -m ${MODIFIED.csv} -n ${NAMES} -c ${COLUMNS} -s
+Rscript scripts/PCA.R -u ${UNMODIFIED.csv} -m ${MODIFIED.csv} -n ${NAMES} -c ${COLUMNS}
 
-Where ${NAMES} are comma separated names for the datasets,
-${COLUMNS} are comma seperated column numbers that will be used for the PCA,
-and s is an optional flag for triggering scaled PCA instead of just centered PCA
+Where ${NAMES} are comma separated names for the datasets, and
+${COLUMNS} are comma separated column numbers that will be used for the PCA
 
 ```
 
