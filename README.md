@@ -193,6 +193,7 @@ Rscript polyA_guppy.R sites.bed ${tailfindr_DIR} ${nanopolish_DIR}
 
 ## Citation
 
-We are currently preparing a draft for bioRxiv. 
+If you find this code useful, please cite: 
 
+Begik O*, Lucas MC*, Ramirez JM, Milenkovic I, Cruciani S, Vieira HGS, Medina R, Liu H, Sas-Chen A, Mattick JS, Schwartz S and Novoa EM. Decoding ribosomal RNA modification dynamics at single molecule resolution. bioRxiv 2020. doi: https://doi.org/10.1101/2020.07.06.189969
 
